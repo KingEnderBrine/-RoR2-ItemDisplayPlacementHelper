@@ -1,0 +1,22 @@
+{
+    "name": "ItemDisplayPlacementHelper",
+    "references": [
+        "Unity.TextMeshPro"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Assembly-CSharp.refstub.dll",
+        "BepInEx.dll",
+        "R2API.dll",
+        "MMHOOK_Assembly-CSharp.dll",
+        "Wwise.dll",
+        "Unity.Postprocessing.Runtime.dll",
+        "Rewired_Core.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

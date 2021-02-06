@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3695521163bdd74fa2845bbd3438240, type: 3}
+  m_Name: Publish
+  m_EditorClassIdentifier: 
+  Data:
+  - {fileID: 114894733308292250}
+  - {fileID: 114883297364403958}
+  - {fileID: 114562721647131228}
+  manifests: {fileID: 11400000, guid: e139b749a26fbe34eb83f1240d87b69e, type: 2}
+--- !u!114 &114562721647131228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8808e815b3ce9c94e9552cb1dee9e305, type: 3}
+  m_Name: Zip
+  m_EditorClassIdentifier: 
+  PerManifest: 1
+  SourcePath: <ManifestStagingRoot>
+  OutputFile: <ReleaseFolder>/<ManifestNamePath>-<ManifestVersion>.zip
+  ShowOutput: 1
+--- !u!114 &114883297364403958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 369b8ce5419c70241989a1c1b1eb63d0, type: 3}
+  m_Name: StageManifestFiles
+  m_EditorClassIdentifier: 
+  includeReadme: 1
+  includeIcon: 1
+  includeManifestJson: 1
+--- !u!114 &114894733308292250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50df4f9027e15e04b931a8d460fb22c5, type: 3}
+  m_Name: ExecutePipeline
+  m_EditorClassIdentifier: 
+  executePipeline: {fileID: 11400000, guid: 38a47f707d03cc24299afb25c4b4cbab, type: 2}

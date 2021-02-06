@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3695521163bdd74fa2845bbd3438240, type: 3}
+  m_Name: ReleaseStaging
+  m_EditorClassIdentifier: 
+  Data:
+  - {fileID: 114963817539755856}
+  - {fileID: 114116202971528676}
+  - {fileID: 114806144451787498}
+  - {fileID: 114262309709086488}
+  - {fileID: 114795100262584136}
+  - {fileID: 114539673802362378}
+  - {fileID: 114817025122741030}
+  manifests: {fileID: 11400000, guid: e139b749a26fbe34eb83f1240d87b69e, type: 2}
+--- !u!114 &114116202971528676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b1b418c1fac294aabeaf5a019c66a6, type: 3}
+  m_Name: ClearFolder
+  m_EditorClassIdentifier: 
+  input: <BepInExPluginsFolder>
+--- !u!114 &114262309709086488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c843102fb17784f4181382b210e75cc1, type: 3}
+  m_Name: BuildAssetBundles
+  m_EditorClassIdentifier: 
+  AssetBundleBuildOptions: 0
+  buildTarget: 5
+  outputFolder: <AssetBundlesStagePath>
+--- !u!114 &114539673802362378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5b20fac9c71fd64183cb7a8f359d73a, type: 3}
+  m_Name: StageAssemblies
+  m_EditorClassIdentifier: 
+  stageDebugDatabases: 0
+--- !u!114 &114795100262584136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4060805dcb13a214fa4bb690c49f0ce5, type: 3}
+  m_Name: SaveAssets
+  m_EditorClassIdentifier: 
+--- !u!114 &114806144451787498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b1b418c1fac294aabeaf5a019c66a6, type: 3}
+  m_Name: ClearFolder
+  m_EditorClassIdentifier: 
+  input: <BepInExMonomodFolder>
+--- !u!114 &114817025122741030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466569a847f376f42ac6dab0b0ca61cf, type: 3}
+  m_Name: StageBuildedAssetBundles
+  m_EditorClassIdentifier: 
+  inputFolder: <AssetBundlesStagePath>
+--- !u!114 &114963817539755856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7b1b418c1fac294aabeaf5a019c66a6, type: 3}
+  m_Name: ClearFolder
+  m_EditorClassIdentifier: 
+  input: <StagingRoot>

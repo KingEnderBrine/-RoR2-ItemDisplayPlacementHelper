@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e563561e08b6a3642a487177f5cfbb37, type: 3}
+  m_Name: ItemDisplayPlacementHelper
+  m_EditorClassIdentifier: 
+  Data:
+  - {fileID: 114229970246630708}
+  - {fileID: 114149610312990638}
+  - {fileID: 114494575955170942}
+--- !u!114 &114149610312990638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86d4b1be9b930e945be74735783a28f6, type: 3}
+  m_Name: ThunderstoreManifest
+  m_EditorClassIdentifier: 
+  StagingPaths:
+  - <ManifestStagingRoot>
+  author: KingEnderBrine
+  versionNumber: 1.0.0
+  url: https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper
+  description: A mod/tool for item/character devs to simplify work with IDRS placement
+  readme: {fileID: 4900000, guid: 69f7e81f851c0f24cabe3d8f2305cdd1, type: 3}
+  icon: {fileID: 2800000, guid: c5a91a664bf30b44ca78a5af65e319c2, type: 3}
+  dependencies: 
+  - bbepis-BepInExPack-5.3.1
+  - tristanmcpherson-R2API-2.5.14
+--- !u!114 &114229970246630708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d1008b78cb6e846889b7778282fbef, type: 3}
+  m_Name: AssetBundleDefs
+  m_EditorClassIdentifier: 
+  StagingPaths:
+  - <ManifestPluginStaging>
+  assetBundles:
+  - assetBundleName: kingenderbrine_idrs_editor
+    assets: []
+--- !u!114 &114494575955170942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b7e13dda513544419a89926bd12ad8a, type: 3}
+  m_Name: AssemblyDefinitions
+  m_EditorClassIdentifier: 
+  StagingPaths:
+  - <ManifestPluginStaging>
+  definitions:
+  - {fileID: 5897886265953266890, guid: 40e03474d33445d49875729ac2857a3c, type: 3}
