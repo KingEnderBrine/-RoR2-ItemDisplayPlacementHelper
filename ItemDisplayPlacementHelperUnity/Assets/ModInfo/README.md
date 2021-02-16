@@ -119,6 +119,16 @@ Scaling is always done in local space.
 If you have a feature in mind that would be good to have in this mod feel free to ping `@KingEnderBrine` in RoR modding discord.
 
 # Changelog
+**1.0.2**
+
+* Updated version number in mod dll.
+
+**1.0.1**
+
+* Added new dropdown to show only vanilla items / only modded items / all items (Request by DestroyedClone).
+* Fixed an issue when changing model child names will contain bones from old model.
+* Fixed an issue when having time scale set to less than 0.01 was causing issues with axes collsion detection
+
 **1.0.0**
 
 * Mod release.

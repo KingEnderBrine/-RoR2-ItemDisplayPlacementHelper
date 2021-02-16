@@ -20,6 +20,7 @@ namespace ItemDisplayPlacementHelper
         public Button disableAllButton;
         public TMP_InputField searchInput;
         public GameObject noIDRSTextObject;
+        public TMP_Dropdown showItemsMode;
 
         private readonly Dictionary<int, DisplayRuleGroupPreviewController> itemRows = new Dictionary<int, DisplayRuleGroupPreviewController>();
         private readonly Dictionary<int, DisplayRuleGroupPreviewController> equipmentRows = new Dictionary<int, DisplayRuleGroupPreviewController>();
@@ -45,6 +46,7 @@ namespace ItemDisplayPlacementHelper
             enableAllButton.interactable = characterModel;
             disableAllButton.interactable = characterModel;
             searchInput.interactable = characterModel;
+            showItemsMode.interactable = characterModel;
         }
 
         private void OnModelChanged(CharacterModel characterModel)
@@ -89,6 +91,7 @@ namespace ItemDisplayPlacementHelper
                 {
                     continue;
                 }
+
                 var row = Instantiate(rowPrefab, container);
                 var controller = row.GetComponent<DisplayRuleGroupPreviewController>();
         
@@ -119,16 +122,12 @@ namespace ItemDisplayPlacementHelper
         public void ApplyFilter(string newFilter)
         {
             filter = newFilter;
-            var filterIsEmpty = string.IsNullOrEmpty(filter);
+            UpdateRowsVisibility();
+        }
 
-            foreach (var row in itemRows.Values)
-            {
-                row.gameObject.SetActive(filterIsEmpty || row.nameText.ContainsInSequence(filter));
-            }
-            foreach (var row in equipmentRows.Values)
-            {
-                row.gameObject.SetActive(filterIsEmpty || row.nameText.ContainsInSequence(filter));
-            }
+        public void ChangeShowMode(int value)
+        {
+            UpdateRowsVisibility();
         }
 
         public void EnableAll()
@@ -148,6 +147,46 @@ namespace ItemDisplayPlacementHelper
             foreach (var row in equipmentRows.Values)
             {
                 row.ToggleDisplay(false);
+            }
+        }
+
+        private void UpdateRowsVisibility()
+        {
+            var filterIsEmpty = string.IsNullOrEmpty(filter);
+
+            foreach (var row in itemRows.Values)
+            {
+                var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
+                if (active)
+                {
+                    switch (showItemsMode.value)
+                    {
+                        case 1:
+                            active = row.index < (int)ItemIndex.Count;
+                            break;
+                        case 2:
+                            active = row.index >= (int)ItemIndex.Count;
+                            break;
+                    }
+                }
+                row.gameObject.SetActive(active);
+            }
+            foreach (var row in equipmentRows.Values)
+            {
+                var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
+                if (active)
+                {
+                    switch (showItemsMode.value)
+                    {
+                        case 1:
+                            active = row.index < (int)EquipmentIndex.Count;
+                            break;
+                        case 2:
+                            active = row.index >= (int)EquipmentIndex.Count;
+                            break;
+                    }
+                }
+                row.gameObject.SetActive(active);
             }
         }
     }

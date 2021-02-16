@@ -56,6 +56,7 @@ namespace ItemDisplayPlacementHelper
             this.characterModel = characterModel;
 
             ClearValues();
+            childNameDropdown.ClearOptions();
 
             if (characterModel)
             {

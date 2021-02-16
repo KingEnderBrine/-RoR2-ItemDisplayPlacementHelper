@@ -39,7 +39,7 @@ namespace ItemDisplayPlacementHelper
 
         private void Update()
         {
-            if (Time.timeScale == 0)
+            if (Time.timeScale < 0.01)
             {
                 Physics.SyncTransforms();
             }

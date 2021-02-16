@@ -31,12 +31,12 @@ MonoBehaviour:
   StagingPaths:
   - <ManifestStagingRoot>
   author: KingEnderBrine
-  versionNumber: 1.0.0
+  versionNumber: 1.0.2
   url: https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper
   description: A mod/tool for item/character devs to simplify work with IDRS placement
   readme: {fileID: 4900000, guid: 69f7e81f851c0f24cabe3d8f2305cdd1, type: 3}
   icon: {fileID: 2800000, guid: c5a91a664bf30b44ca78a5af65e319c2, type: 3}
-  dependencies: 
+  dependencies:
   - bbepis-BepInExPack-5.3.1
   - tristanmcpherson-R2API-2.5.14
 --- !u!114 &114229970246630708
