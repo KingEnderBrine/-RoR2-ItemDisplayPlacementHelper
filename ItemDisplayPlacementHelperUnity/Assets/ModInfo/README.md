@@ -119,6 +119,11 @@ Scaling is always done in local space.
 If you have a feature in mind that would be good to have in this mod feel free to ping `@KingEnderBrine` in RoR modding discord.
 
 # Changelog
+**1.1.0**
+
+* Added `Model animator parameters` which will give you a little bit more flexibility on testing how your idrs looks.
+* Added ability to play animations by layer and state name.
+
 **1.0.2**
 
 * Updated version number in mod dll.
@@ -127,7 +132,7 @@ If you have a feature in mind that would be good to have in this mod feel free t
 
 * Added new dropdown to show only vanilla items / only modded items / all items (Request by DestroyedClone).
 * Fixed an issue when changing model child names will contain bones from old model.
-* Fixed an issue when having time scale set to less than 0.01 was causing issues with axes collsion detection
+* Fixed an issue when having time scale set to less than 0.01 was causing issues with axes collsion detection.
 
 **1.0.0**
 
