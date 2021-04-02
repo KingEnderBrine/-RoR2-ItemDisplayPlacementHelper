@@ -119,6 +119,10 @@ Scaling is always done in local space.
 If you have a feature in mind that would be good to have in this mod feel free to ping `@KingEnderBrine` in RoR modding discord.
 
 # Changelog
+**1.2.0**
+
+* Removed r2api dependency
+
 **1.1.1**
 
 * Added `Tab` navigation between IDR input fields.

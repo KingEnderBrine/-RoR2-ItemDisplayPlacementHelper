@@ -1,9 +1,11 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using R2API.Utils;
+using MonoMod.RuntimeDetour.HookGen;
 using RoR2;
 using RoR2.Networking;
+using System;
 using System.Collections;
+using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
 using UnityEngine;
@@ -12,14 +14,15 @@ using UnityEngine.Rendering.PostProcessing;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+[assembly: R2API.Utils.ManualNetworkRegistration]
+[assembly: EnigmaticThunder.Util.ManualNetworkRegistration]
 namespace ItemDisplayPlacementHelper
 {
-    [R2APISubmoduleDependency(nameof(CommandHelper))]
-    [NetworkCompatibility(CompatibilityLevel.NoNeedForSync)]
-    [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.1.1")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
+        private static readonly MethodInfo mainMenuControllerStart = typeof(RoR2.UI.MainMenu.MainMenuController).GetMethod(nameof(RoR2.UI.MainMenu.MainMenuController.Start), BindingFlags.NonPublic | BindingFlags.Instance);
+
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }
 
@@ -30,15 +33,15 @@ namespace ItemDisplayPlacementHelper
             AssetsHelper.LoadAssetBundle();
             ConfigHelper.InitConfigs(Config);
 
-            On.RoR2.UI.MainMenu.MainMenuController.Start += MainMenuController_Start;
+            HookEndpointManager.Add(mainMenuControllerStart, (Action<Action<RoR2.UI.MainMenu.MainMenuController>, RoR2.UI.MainMenu.MainMenuController>)MainMenuController_Start);
         }
 
-        private void MainMenuController_Start(On.RoR2.UI.MainMenu.MainMenuController.orig_Start orig, RoR2.UI.MainMenu.MainMenuController self)
+        private void MainMenuController_Start(Action<RoR2.UI.MainMenu.MainMenuController> orig, RoR2.UI.MainMenu.MainMenuController self)
         {
             orig(self);
-            On.RoR2.UI.MainMenu.MainMenuController.Start -= MainMenuController_Start;
+            HookEndpointManager.Remove(mainMenuControllerStart, (Action<Action<RoR2.UI.MainMenu.MainMenuController>, RoR2.UI.MainMenu.MainMenuController>)MainMenuController_Start);
 
-            PostProcessingValuesInit.PostProcessResources = self.cameraTransform.GetComponent<PostProcessLayer>().GetFieldValue<PostProcessResources>("m_Resources");
+            PostProcessingValuesInit.PostProcessResources = typeof(PostProcessLayer).GetField("m_Resources", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(self.cameraTransform.GetComponentInChildren<PostProcessLayer>()) as PostProcessResources;
             PostProcessingValuesInit.PostProcessProfile = self.cameraTransform.GetComponentInChildren<PostProcessVolume>().sharedProfile;
         }
 

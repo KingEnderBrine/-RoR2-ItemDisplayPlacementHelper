@@ -1,5 +1,4 @@
-﻿using R2API.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
 namespace ItemDisplayPlacementHelper
@@ -14,7 +13,7 @@ namespace ItemDisplayPlacementHelper
 
         private void Awake()
         {
-            postProcessLayer.SetFieldValue("m_Resources", PostProcessResources);
+            typeof(PostProcessLayer).GetField("m_Resources", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(postProcessLayer, PostProcessResources);
             postProcessVolume.sharedProfile = PostProcessProfile;
         }
     }

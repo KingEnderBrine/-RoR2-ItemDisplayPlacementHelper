@@ -11,11 +11,10 @@
     "precompiledReferences": [
         "Assembly-CSharp.refstub.dll",
         "BepInEx.dll",
-        "R2API.dll",
-        "MMHOOK_Assembly-CSharp.dll",
         "Wwise.dll",
         "Unity.Postprocessing.Runtime.dll",
-        "Rewired_Core.dll"
+        "Rewired_Core.dll",
+        "MonoMod.RuntimeDetour.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": []

@@ -162,10 +162,10 @@ namespace ItemDisplayPlacementHelper
                     switch (showItemsMode.value)
                     {
                         case 1:
-                            active = row.index < (int)ItemIndex.Count;
+                            active = row.index < RoR2Content.Items.itemDefs.Length;
                             break;
                         case 2:
-                            active = row.index >= (int)ItemIndex.Count;
+                            active = row.index >= RoR2Content.Items.itemDefs.Length;
                             break;
                     }
                 }
@@ -179,10 +179,10 @@ namespace ItemDisplayPlacementHelper
                     switch (showItemsMode.value)
                     {
                         case 1:
-                            active = row.index < (int)EquipmentIndex.Count;
+                            active = row.index < RoR2Content.Equipment.equipmentDefs.Length;
                             break;
                         case 2:
-                            active = row.index >= (int)EquipmentIndex.Count;
+                            active = row.index >= RoR2Content.Equipment.equipmentDefs.Length;
                             break;
                     }
                 }

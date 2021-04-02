@@ -38,15 +38,13 @@ namespace ItemDisplayPlacementHelper
 
             logbookBodyOptions = MapBodiesToOptions(
                 SurvivorCatalog.orderedSurvivorDefs.Select(survivorDef => BodyCatalog.GetBodyPrefabBodyComponent(SurvivorCatalog.GetBodyIndexFromSurvivorIndex(survivorDef.survivorIndex)))
-                .Union(BodyCatalog.allBodyPrefabBodyBodyComponents.Where(characterBody => characterBody && UnlockableExists(characterBody.GetComponent<DeathRewards>()?.logUnlockableName))));
+                .Union(BodyCatalog.allBodyPrefabBodyBodyComponents.Where(characterBody => characterBody && characterBody.GetComponent<DeathRewards>()?.logUnlockableDef)));
 
             allBodyOptions = MapBodiesToOptions(BodyCatalog.allBodyPrefabBodyBodyComponents);
 
             dropdown.Options = logbookBodyOptions;
 
             (dropdown.OnItemSelected ?? (dropdown.OnItemSelected = new SearchableDropdown.DropdownEvent())).AddListener(SelectModel);
-
-            bool UnlockableExists(string unlockableName) => unlockableName != null && UnlockableCatalog.GetUnlockableDef(unlockableName) != null;
 
             List<SearchableDropdown.OptionData> MapBodiesToOptions(IEnumerable<CharacterBody> bodies)
             {
