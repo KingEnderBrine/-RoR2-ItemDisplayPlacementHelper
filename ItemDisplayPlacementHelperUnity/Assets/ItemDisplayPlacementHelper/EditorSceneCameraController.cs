@@ -10,6 +10,10 @@ namespace ItemDisplayPlacementHelper
 {
     public class EditorSceneCameraController : MonoBehaviour, ICameraStateProvider, IPointerEnterHandler, IPointerExitHandler
     {
+        private Vector3 focusPoint = default;
+        public enum ControlScheme { Unity, Blender }
+        public ControlScheme controlScheme;
+
         enum ActionType { None, Rotation, Movement }
 
         private const float rotationMultiplier = 0.15F;
@@ -64,7 +68,14 @@ namespace ItemDisplayPlacementHelper
                 {
                     if (Input.GetMouseButtonDown(2))
                     {
-                        currentActionType = ActionType.Movement;
+                        if (Input.GetKeyDown(KeyCode.LeftAlt))
+                        {
+                            //TODO: change focus point
+                        }
+                        else
+                        {
+                            currentActionType = ActionType.Movement;
+                        }
                     }
                     else if (Input.GetMouseButtonDown(1))
                     {
@@ -72,7 +83,15 @@ namespace ItemDisplayPlacementHelper
                     }
                 }
 
-                CameraRigController.transform.position += CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
+                switch (controlScheme)
+                {
+                    case ControlScheme.Unity:
+                        CameraRigController.transform.position += CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
+                        break;
+                    case ControlScheme.Blender:
+                        CameraRigController.transform.position += (float)Math.Log((CameraRigController.transform.position - focusPoint).magnitude) * CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
+                        break;
+                }
             }
 
             if (EditorAxisController.Instance.SelectedAxis == Axis.None)
@@ -83,10 +102,22 @@ namespace ItemDisplayPlacementHelper
                     case ActionType.Movement:
                         CameraRigController.transform.position -= CameraRigController.transform.up * deltaMousePosition.y * sidewaysMovementSensitivity * sidewaysMovementMultiplier * coefficient;
                         CameraRigController.transform.position -= CameraRigController.transform.right * deltaMousePosition.x * sidewaysMovementSensitivity * sidewaysMovementMultiplier * coefficient;
+                        if (controlScheme == ControlScheme.Blender)
+                        {
+                            //TODO: move focusPoint
+                        }
                         break;
                     case ActionType.Rotation:
-                        CameraRigController.transform.Rotate(Vector3.right, deltaMousePosition.y * rotationSensitivity * rotationMultiplier * -1, Space.Self);
-                        CameraRigController.transform.Rotate(Vector3.up, deltaMousePosition.x * rotationSensitivity * rotationMultiplier, Space.World);
+                        switch (controlScheme)
+                        {
+                            case ControlScheme.Unity:
+                                CameraRigController.transform.Rotate(Vector3.right, deltaMousePosition.y * rotationSensitivity * rotationMultiplier * -1, Space.Self);
+                                CameraRigController.transform.Rotate(Vector3.up, deltaMousePosition.x * rotationSensitivity * rotationMultiplier, Space.World);
+                                break;
+                            case ControlScheme.Blender:
+                                //TODO: camera orbiting
+                                break;
+                        }
                         break;
                 }
             }
