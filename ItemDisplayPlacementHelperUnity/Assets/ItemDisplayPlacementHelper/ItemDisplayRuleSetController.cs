@@ -1,4 +1,5 @@
 ﻿using RoR2;
+using RoR2.ContentManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,12 @@ namespace ItemDisplayPlacementHelper
 {
     public class ItemDisplayRuleSetController : MonoBehaviour
     {
+        private static ReadOnlyNamedAssetCollection<EquipmentDef> _ror2EquipmentDefs;
+        private static ReadOnlyNamedAssetCollection<EquipmentDef> RoR2EquipmentDefs { get => _ror2EquipmentDefs.src != null ? _ror2EquipmentDefs : (_ror2EquipmentDefs = ContentManager.FindContentPack("RoR2.BaseContent").GetValueOrDefault().equipmentDefs); }
+
+        private static ReadOnlyNamedAssetCollection<ItemDef> _ror2ItemDefs;
+        private static ReadOnlyNamedAssetCollection<ItemDef> RoR2ItemDefs { get => _ror2ItemDefs.src != null ? _ror2ItemDefs : (_ror2ItemDefs = ContentManager.FindContentPack("RoR2.BaseContent").GetValueOrDefault().itemDefs); }
+
         public enum Catalog { Item, Equipment }
 
         public GameObject rowPrefab;
@@ -159,13 +166,14 @@ namespace ItemDisplayPlacementHelper
                 var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
                 if (active)
                 {
+                    var itemDef = ItemCatalog.GetItemDef((ItemIndex)row.index);
                     switch (showItemsMode.value)
                     {
                         case 1:
-                            active = row.index < RoR2Content.Items.itemDefs.Length;
+                            active = RoR2ItemDefs.Contains(itemDef);
                             break;
                         case 2:
-                            active = row.index >= RoR2Content.Items.itemDefs.Length;
+                            active = !RoR2ItemDefs.Contains(itemDef);
                             break;
                     }
                 }
@@ -176,13 +184,14 @@ namespace ItemDisplayPlacementHelper
                 var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
                 if (active)
                 {
+                    var equipmentDef = EquipmentCatalog.GetEquipmentDef((EquipmentIndex)row.index);
                     switch (showItemsMode.value)
                     {
                         case 1:
-                            active = row.index < RoR2Content.Equipment.equipmentDefs.Length;
+                            active = RoR2EquipmentDefs.Contains(equipmentDef);
                             break;
                         case 2:
-                            active = row.index >= RoR2Content.Equipment.equipmentDefs.Length;
+                            active = !RoR2EquipmentDefs.Contains(equipmentDef);
                             break;
                     }
                 }
