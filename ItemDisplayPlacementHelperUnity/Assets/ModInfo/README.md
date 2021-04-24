@@ -8,7 +8,7 @@ A mod/tool to simplify process of item display placement for item/character deve
 You need to have an item display (default or character-specific), which you will edit and replace its values in code when you have done.
 
 ### Enter editing scene
-First of all, you need to enter special scene where everything happens. This can be done by pressing `F2`.
+First of all, you need to enter special scene where everything happens. This can be done by pressing `F2` (You need to be in the main menu).
 
 ### Pick a model
 You can search for a model by localized name, body object name or model object name.
@@ -98,7 +98,7 @@ Scaling is always done in local space.
 
 # Keybindings
 #### General
-* `F2` - Enter `ItemDisplayPlacementHelper` scene
+* `F2` - Enter `ItemDisplayPlacementHelper` scene (You need to be in the main menu)
 * `F` - Toggle fade
 * `T` - Toggle time
 
@@ -110,18 +110,29 @@ Scaling is always done in local space.
 
 #### Camera movement
 * `RightMouseButton` - Hold and move mouse to look around
+* `ALT` + `RightMouseButton` - Hold and move mouse to rotate camera around focus point
 * `MiddleMouseButton` - Hold and move mouse to move camera
+* `ALT` + `MiddleMouseButton` - Press once to move focus point to point on the model under mouse.
 * `MouseWheel` - Scroll to zoom in/out.
+* `ALT` + `MouseWheel` - Scroll to move to/from focus point
 * `CTRL` - Hold to slow down camera movement speed
 * `SHIFT` - Hold to speed up camera movement speed
 
 # More features
 If you have a feature in mind that would be good to have in this mod feel free to ping `@KingEnderBrine` in RoR modding discord.
 
+
+If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
+
 # Changelog
+**1.3.0**
+
+* Fixed item filter not working correctly.
+* Added camera movement like in Blender.
+
 **1.2.0**
 
-* Removed r2api dependency
+* Removed r2api dependency.
 
 **1.1.1**
 

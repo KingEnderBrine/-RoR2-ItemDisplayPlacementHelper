@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using Generics.Dynamics;
+using RoR2;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -26,6 +27,7 @@ namespace ItemDisplayPlacementHelper
         public GameObject ModelInstance { get; private set; }
         public CharacterModel CharacterModel { get; private set; }
         public ModelSkinController ModelSkinController { get; private set; }
+        public Dictionary<SkinnedMeshRenderer, MeshCollider> CachedSkinnedMeshRenderers { get; } = new Dictionary<SkinnedMeshRenderer, MeshCollider>();
 
         public static ModelPicker Instance { get; private set; }
 
@@ -87,6 +89,7 @@ namespace ItemDisplayPlacementHelper
 
         private void DestroyModelInstance()
         {
+            CachedSkinnedMeshRenderers.Clear();
             Destroy(ModelInstance);
 
             ModelInstance = null;
@@ -164,6 +167,33 @@ namespace ItemDisplayPlacementHelper
             foreach (var shackeEmmiter in ModelInstance.GetComponentsInChildren<ShakeEmitter>())
             {
                 shackeEmmiter.enabled = false;
+            }
+
+            foreach (var collider in ModelInstance.GetComponentsInChildren<Collider>())
+            {
+                collider.enabled = false;
+            }
+
+            foreach (var inverseKinematic in ModelInstance.GetComponentsInChildren<InverseKinematics>())
+            {
+                inverseKinematic.enabled = false;
+            }
+
+            foreach (var meshFilter in ModelInstance.GetComponentsInChildren<MeshFilter>())
+            {
+                var collider = meshFilter.gameObject.AddComponent<MeshCollider>();
+                collider.convex = false;
+                collider.sharedMesh = meshFilter.sharedMesh;
+                meshFilter.gameObject.layer = 11;
+            }
+
+            foreach (var meshRenderer in ModelInstance.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                var collider = meshRenderer.gameObject.AddComponent<MeshCollider>();
+                collider.convex = false;
+                collider.sharedMesh = new Mesh();
+                meshRenderer.gameObject.layer = 11;
+                CachedSkinnedMeshRenderers[meshRenderer] = collider;
             }
         }
 

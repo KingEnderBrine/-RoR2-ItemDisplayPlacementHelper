@@ -14,11 +14,9 @@ using UnityEngine.Rendering.PostProcessing;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
-[assembly: R2API.Utils.ManualNetworkRegistration]
-[assembly: EnigmaticThunder.Util.ManualNetworkRegistration]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.1.1")]
+    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.3.0")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
         private static readonly MethodInfo mainMenuControllerStart = typeof(RoR2.UI.MainMenu.MainMenuController).GetMethod(nameof(RoR2.UI.MainMenu.MainMenuController.Start), BindingFlags.NonPublic | BindingFlags.Instance);
