@@ -10,9 +10,8 @@ namespace ItemDisplayPlacementHelper
 {
     public class EditorSceneCameraController : MonoBehaviour, ICameraStateProvider, IPointerEnterHandler, IPointerExitHandler
     {
-        private Vector3 focusPoint = default;
-        public enum ControlScheme { Unity, Blender }
-        public ControlScheme controlScheme;
+        private const float minFocusLength = 0.1F;
+        private float focusLength = 4F;
 
         enum ActionType { None, Rotation, Movement }
 
@@ -36,13 +35,12 @@ namespace ItemDisplayPlacementHelper
         public bool PointerInside { get; private set; }
         private ActionType currentActionType;
 
-        public RectTransform rectTransform;
+        private Vector3? lerpPosition;
+        private float lerpCameraTime;
 
         private void Awake()
         {
             Instance = this;
-
-            rectTransform = GetComponent<RectTransform>();
 
             CameraRigController.SetOverrideCam(this, 0);
             
@@ -68,29 +66,81 @@ namespace ItemDisplayPlacementHelper
                 {
                     if (Input.GetMouseButtonDown(2))
                     {
-                        if (Input.GetKeyDown(KeyCode.LeftAlt))
+                        if (Input.GetKey(KeyCode.LeftAlt))
                         {
-                            //TODO: change focus point
+                            foreach (var row in ModelPicker.Instance.CachedSkinnedMeshRenderers)
+                            {
+                                var localScale = row.Key.transform.localScale;
+                                var lossyScale = row.Key.transform.lossyScale;
+                                var scaleProportion = new Vector3(localScale.x / lossyScale.x, localScale.y / lossyScale.y, localScale.z / lossyScale.z);
+                                if (localScale != Vector3.one || scaleProportion != Vector3.one)
+                                {
+                                    row.Key.transform.localScale = scaleProportion;
+                                }
+
+                                row.Key.BakeMesh(row.Value.sharedMesh);
+                                row.Value.sharedMesh = row.Value.sharedMesh;
+
+                                if (localScale != Vector3.one || scaleProportion != Vector3.one)
+                                {
+                                    row.Key.transform.localScale = localScale;
+                                }
+                            }
+                            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitInfo, 100F, LayerMask.GetMask("World")))
+                            {
+                                lerpPosition = hitInfo.point + CameraRigController.transform.forward * -1 * focusLength;
+                                lerpCameraTime = 0;
+                            }
                         }
                         else
                         {
                             currentActionType = ActionType.Movement;
+                            lerpPosition = null;
                         }
                     }
                     else if (Input.GetMouseButtonDown(1))
                     {
                         currentActionType = ActionType.Rotation;
+                        lerpPosition = null;
                     }
                 }
 
-                switch (controlScheme)
+                var scrollMovement = CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
+                if (Input.GetKey(KeyCode.LeftAlt))
                 {
-                    case ControlScheme.Unity:
-                        CameraRigController.transform.position += CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
-                        break;
-                    case ControlScheme.Blender:
-                        CameraRigController.transform.position += (float)Math.Log((CameraRigController.transform.position - focusPoint).magnitude) * CameraRigController.transform.forward * Input.mouseScrollDelta.y * forwardMovementSensitivity * forwardMovementMultiplier * coefficient;
-                        break;
+                    var sign = Mathf.Sign(Input.mouseScrollDelta.y);
+                    if (sign == 1 && focusLength <= minFocusLength)
+                    {
+                        scrollMovement = Vector3.zero;
+                        focusLength = minFocusLength;
+                    }
+                    else
+                    {
+                        var focusPointScale = Mathf.Max((float)Math.Log(focusLength), 0.5F);
+                        scrollMovement *= focusPointScale;
+                        if (focusLength - sign * scrollMovement.magnitude <= minFocusLength)
+                        {
+                            scrollMovement = Vector3.zero;
+                        }
+                        focusLength -= sign * scrollMovement.magnitude;
+                    }
+                }
+
+                if (scrollMovement != Vector3.zero)
+                {
+                    lerpPosition = null;
+                }
+
+                CameraRigController.transform.position += scrollMovement;
+            }
+
+            if (lerpPosition.HasValue)
+            {
+                lerpCameraTime += Time.unscaledDeltaTime;
+                CameraRigController.transform.position = Vector3.Lerp(CameraRigController.transform.position, lerpPosition.Value, lerpCameraTime);
+                if (lerpCameraTime >= 1)
+                {
+                    lerpPosition = null;
                 }
             }
 
@@ -102,21 +152,18 @@ namespace ItemDisplayPlacementHelper
                     case ActionType.Movement:
                         CameraRigController.transform.position -= CameraRigController.transform.up * deltaMousePosition.y * sidewaysMovementSensitivity * sidewaysMovementMultiplier * coefficient;
                         CameraRigController.transform.position -= CameraRigController.transform.right * deltaMousePosition.x * sidewaysMovementSensitivity * sidewaysMovementMultiplier * coefficient;
-                        if (controlScheme == ControlScheme.Blender)
-                        {
-                            //TODO: move focusPoint
-                        }
                         break;
                     case ActionType.Rotation:
-                        switch (controlScheme)
+                        if (Input.GetKey(KeyCode.LeftAlt))
                         {
-                            case ControlScheme.Unity:
-                                CameraRigController.transform.Rotate(Vector3.right, deltaMousePosition.y * rotationSensitivity * rotationMultiplier * -1, Space.Self);
-                                CameraRigController.transform.Rotate(Vector3.up, deltaMousePosition.x * rotationSensitivity * rotationMultiplier, Space.World);
-                                break;
-                            case ControlScheme.Blender:
-                                //TODO: camera orbiting
-                                break;
+                            var focusPoint = CameraRigController.transform.position + CameraRigController.transform.forward * focusLength;
+                            CameraRigController.transform.RotateAround(focusPoint, CameraRigController.transform.right, deltaMousePosition.y * rotationSensitivity * rotationMultiplier * -2);
+                            CameraRigController.transform.RotateAround(focusPoint, Vector3.up, deltaMousePosition.x * rotationSensitivity * rotationMultiplier * 2);
+                        }
+                        else
+                        {
+                            CameraRigController.transform.Rotate(Vector3.right, deltaMousePosition.y * rotationSensitivity * rotationMultiplier * -1, Space.Self);
+                            CameraRigController.transform.Rotate(Vector3.up, deltaMousePosition.x * rotationSensitivity * rotationMultiplier, Space.World);
                         }
                         break;
                 }

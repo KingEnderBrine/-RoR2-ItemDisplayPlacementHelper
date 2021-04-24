@@ -48,7 +48,7 @@ namespace ItemDisplayPlacementHelper
 
         private void Update()
         {
-            noIDRSTextObject.SetActive(characterModel && !characterModel.itemDisplayRuleSet);
+            noIDRSTextObject.SetActive(ModelPicker.Instance.ModelInstance && (!characterModel || !characterModel.itemDisplayRuleSet));
 
             enableAllButton.interactable = characterModel;
             disableAllButton.interactable = characterModel;
