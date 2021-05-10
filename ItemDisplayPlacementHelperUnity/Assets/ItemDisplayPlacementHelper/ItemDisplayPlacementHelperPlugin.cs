@@ -11,12 +11,13 @@ using System.Security.Permissions;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.SceneManagement;
 
 [module: UnverifiableCode]
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.3.0")]
+    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.4.0")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
         private static readonly MethodInfo mainMenuControllerStart = typeof(RoR2.UI.MainMenu.MainMenuController).GetMethod(nameof(RoR2.UI.MainMenu.MainMenuController.Start), BindingFlags.NonPublic | BindingFlags.Instance);
@@ -50,7 +51,7 @@ namespace ItemDisplayPlacementHelper
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F2))
+            if (Input.GetKeyDown(KeyCode.F2) && SceneManager.GetActiveScene().name == "title")
             {
                 StartCoroutine(StartSceneCoroutine());
             }

@@ -15,4 +15,5 @@
         YZ = Y | Z,
         XYZ = X | Y | Z
     }
+    public enum CopyFormat { Custom, Block, Inline }
 }

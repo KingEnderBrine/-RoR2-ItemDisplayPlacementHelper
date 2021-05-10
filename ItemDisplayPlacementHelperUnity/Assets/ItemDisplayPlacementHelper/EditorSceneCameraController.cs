@@ -177,6 +177,12 @@ namespace ItemDisplayPlacementHelper
             previousMousePosition = Input.mousePosition;
         }
 
+        public void FocusOnPoint(Vector3 point)
+        {
+            lerpPosition = CameraRigController.transform.forward * -1 * focusLength + point;
+            lerpCameraTime = 0;
+        }
+
         public void GetCameraState(CameraRigController cameraRigController, ref CameraState cameraState)
         {
             cameraState.rotation = cameraRigController.transform.rotation;

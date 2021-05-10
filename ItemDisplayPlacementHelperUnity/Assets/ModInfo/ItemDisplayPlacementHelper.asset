@@ -31,7 +31,7 @@ MonoBehaviour:
   StagingPaths:
   - <ManifestStagingRoot>
   author: KingEnderBrine
-  versionNumber: 1.3.0
+  versionNumber: 1.4.0
   url: https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper
   description: A mod/tool for item/character devs to simplify work with IDRS placement
   readme: {fileID: 4900000, guid: 69f7e81f851c0f24cabe3d8f2305cdd1, type: 3}

@@ -11,13 +11,15 @@ namespace ItemDisplayPlacementHelper
     {
         public static ConfigEntry<float> FastCoefficient { get; private set; }
         public static ConfigEntry<float> SlowCoefficient { get; private set; }
-        public static ConfigEntry<int> CopyPrecision { get; private set; }
+        public static ConfigEntry<CopyFormat> CopyFormat { get; private set; }
+        public static ConfigEntry<string> CustomFormat { get; private set; }
 
         internal static void InitConfigs(ConfigFile config)
         {
             FastCoefficient = config.Bind("EditorInputs", nameof(FastCoefficient), 2.5F);
             SlowCoefficient = config.Bind("EditorInputs", nameof(SlowCoefficient), 0.1F);
-            CopyPrecision = config.Bind("EditorInputs", nameof(CopyPrecision), 4);
+            CopyFormat = config.Bind("EditorInputs", nameof(CopyFormat), ItemDisplayPlacementHelper.CopyFormat.Block);
+            CustomFormat = config.Bind("EditorInputs", nameof(CustomFormat), "");
         }
     }
 }

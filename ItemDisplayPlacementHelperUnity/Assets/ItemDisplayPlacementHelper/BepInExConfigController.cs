@@ -17,7 +17,8 @@ namespace ItemDisplayPlacementHelper
         {
             sensitivityController.fastCoefficientInput.Value = ConfigHelper.FastCoefficient.Value;
             sensitivityController.slowCoefficientInput.Value = ConfigHelper.SlowCoefficient.Value;
-            parentedPrefabDisplayController.precisionInput.text = ConfigHelper.CopyPrecision.Value.ToString();
+            parentedPrefabDisplayController.CopyFormat = ConfigHelper.CopyFormat.Value;
+            parentedPrefabDisplayController.customFormatInput.text = FromConfigFriendly(ConfigHelper.CustomFormat.Value);
 
             StartCoroutine(SaveCurrentValues());
         }
@@ -35,8 +36,19 @@ namespace ItemDisplayPlacementHelper
 
                 ConfigHelper.FastCoefficient.Value = sensitivityController.fastCoefficientInput.Value;
                 ConfigHelper.SlowCoefficient.Value = sensitivityController.slowCoefficientInput.Value;
-                ConfigHelper.CopyPrecision.Value = parentedPrefabDisplayController.CurrentPrecision;
+                ConfigHelper.CopyFormat.Value = parentedPrefabDisplayController.CopyFormat;
+                ConfigHelper.CustomFormat.Value = ToConfigFriendly(parentedPrefabDisplayController.customFormatInput.text);
             }
+        }
+
+        private static string ToConfigFriendly(string str)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(str)).Replace('=', '-');
+        }
+
+        private static string FromConfigFriendly(string str)
+        {
+            return Encoding.UTF8.GetString(Convert.FromBase64String(str.Replace('-', '=')));
         }
     }
 }

@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,7 +23,13 @@ namespace ItemDisplayPlacementHelper
 
         [Space]
         public Button copyToClipboardButton;
-        public TMP_InputField precisionInput;
+        public Button editCopyFormatButton;
+
+        [Space]
+        public GameObject editFormatContainer;
+        public TMP_InputField customFormatInput;
+        public TMP_Text formatPreviewText;
+        public TMP_Dropdown formatDropdown;
 
         private CharacterModel characterModel;
         public CharacterModel.ParentedPrefabDisplay ParentedPrefabDisplay { get; private set; }
@@ -29,7 +37,22 @@ namespace ItemDisplayPlacementHelper
 
         public static ParentedPrefabDisplayController Instance { get; private set; }
 
-        public int CurrentPrecision { get; private set; } = 4;
+        private CopyFormat _copyFormat;
+        public CopyFormat CopyFormat
+        {
+            get => _copyFormat;
+            set
+            {
+                if (formatDropdown.value == (int)value)
+                {
+                    SelectFormat((int)value);
+                }
+                else
+                {
+                    formatDropdown.value = (int)value;
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -41,6 +64,8 @@ namespace ItemDisplayPlacementHelper
 
             ModelPicker.OnModelChanged += OnModelChanged;
             DisplayRuleGroupEditingController.OnDisplayRuleGroupChanged += OnDisplayRuleGroupChanged;
+
+            formatDropdown.AddOptions(Enum.GetNames(typeof(CopyFormat)).Select(name => new TMP_Dropdown.OptionData(name)).ToList());
         }
 
         private void OnDestroy()
@@ -79,11 +104,15 @@ namespace ItemDisplayPlacementHelper
             localScaleInput.interactable = instanceExists;
             
             copyToClipboardButton.interactable = instanceExists;
-            precisionInput.interactable = instanceExists;
+            editCopyFormatButton.interactable = instanceExists;
+
+            if (!instanceExists)
+            {
+                editFormatContainer.SetActive(false);
+            }
 
             if (!ParentedPrefabDisplay.instance)
             {
-                
                 return;
             }
 
@@ -168,55 +197,119 @@ namespace ItemDisplayPlacementHelper
             ParentedPrefabDisplay.instance.transform.SetParent(child, false);
         }
 
-        public void PrecisionValueChanged(string value)
+        public void SelectFormat(int format)
         {
-            if (!int.TryParse(value, out var num))
-            {
-                precisionInput.SetTextWithoutNotify("");
-            }
-            else if (num < 0)
-            {
-                CurrentPrecision = Mathf.Abs(num);
-                precisionInput.SetTextWithoutNotify(CurrentPrecision.ToString());
-            }
-            else
-            {
-                CurrentPrecision = num;
-            }
-        }
+            _copyFormat = (CopyFormat)format;
+            
+            customFormatInput.gameObject.SetActive(CopyFormat == CopyFormat.Custom);
+            formatPreviewText.transform.parent.parent.gameObject.SetActive(CopyFormat != CopyFormat.Custom);
 
-        public void PrecisionEndEdit(string value)
-        {
-            if (!int.TryParse(value, out var num))
-            {
-                precisionInput.SetTextWithoutNotify("0");
-                CurrentPrecision = 0;
-            }
+            formatPreviewText.text = GetText();
         }
 
         public void CopyValuesToClipboard()
         {
-            var childName = childNameDropdown.captionText.text;
-            var localPos = localPosInput.CurrentValue;
-            var localAngles = localAnglesInput.CurrentValue;
-            var localScale = localScaleInput.CurrentValue;
+            try
+            {
+                var text = GetText();
 
-            var text = $@"childName = ""{childName}"",
-localPos = {NewVector3Text(localPos)},
-localAngles = {NewVector3Text(localAngles)},
-localScale = {NewVector3Text(localScale)}";
+                var result = ReplacePlaceHolders(text);
 
-            GUIUtility.systemCopyBuffer = text;
+                GUIUtility.systemCopyBuffer = result;
+            }
+            catch(Exception e)
+            {
+                DialogController.ShowError(e.Message);
+            }
         }
 
-        private string NewVector3Text(Vector3 vector)
+        public void ToogleEditFormatContainerVisibility()
         {
-            return $"new Vector3({FloatInvariant(vector.x)}F, {FloatInvariant(vector.y)}F, {FloatInvariant(vector.z)}F)";
+            editFormatContainer.SetActive(!editFormatContainer.activeSelf);
         }
 
-        private string FloatInvariant(float num)
+        private string ReplacePlaceHolders(string text)
         {
-            return num.ToString($"0.{"".PadLeft(CurrentPrecision, '#')}", CultureInfo.InvariantCulture);
+            var matches = Regex.Matches(text, @"(?<!\{)\{([^\{\}:]*?)(:(.*?))?\}(?!\})");
+
+            if (matches.Count == 0)
+            {
+                return text;
+            }
+
+            var builder = new StringBuilder();
+            var textIndex = 0;
+            for (var i = 0; i < matches.Count; i++)
+            {
+                var match = matches[i];
+                builder.Append(text.Substring(textIndex, match.Index - textIndex));
+                textIndex = match.Index + match.Length;
+                builder.Append(ParsePlaceHolder(match));
+            }
+
+            return builder.ToString();
         }
+
+        private string ParsePlaceHolder(Match match)
+        {
+            var field = match.Groups[1].Value;
+            var precision = 5;
+            if (match.Groups[3].Success && !int.TryParse(match.Groups[3].Value, out precision))
+            {
+                throw new ArgumentException($"Failed to parse placeholder {match.Value}");
+            }
+
+            switch (field)
+            {
+                case "childName":
+                    return StringText(childNameDropdown.captionText.text);
+                case "localPos":
+                    return NewVector3Text(localPosInput.CurrentValue, precision);
+                case "localAngles":
+                    return NewVector3Text(localAnglesInput.CurrentValue, precision);
+                case "localScale":
+                    return NewVector3Text(localScaleInput.CurrentValue, precision);
+                default:
+                    throw new ArgumentException($"Failed to parse placeholder {match.Value}");
+            }
+        }
+
+        private string GetText()
+        {
+            switch (CopyFormat)
+            {
+                case CopyFormat.Custom:
+                    return customFormatInput.text;
+                case CopyFormat.Block:
+                    return blockFormat;
+                case CopyFormat.Inline:
+                    return inlineFormat;
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+
+        private string StringText(string str)
+        {
+            return $@"""{str}""";
+        }
+
+        private string NewVector3Text(Vector3 vector, int precision)
+        {
+            return $"new Vector3({FloatInvariant(vector.x, precision)}F, {FloatInvariant(vector.y, precision)}F, {FloatInvariant(vector.z, precision)}F)";
+        }
+
+        private string FloatInvariant(float num, int precision)
+        {
+            return num.ToString($"0.{"".PadLeft(precision, '#')}", CultureInfo.InvariantCulture);
+        }
+
+        private const string blockFormat =
+@"childName = {childName},
+localPos = {localPos:5},
+localAngles = {localAngles:5},
+localScale = {localScale:5}
+";
+        private const string inlineFormat = @"{childName}, {localPos:5}, {localAngles:5}, {localScale:5}";
     }
 }

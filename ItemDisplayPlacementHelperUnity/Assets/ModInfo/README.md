@@ -55,11 +55,15 @@ Gray cube in center will scale all axes simultaneously.
 ![](https://cdn.discordapp.com/attachments/706089456855154778/807279934145298539/unknown.png)
 
 ### Copy values
-When you placed your item where you want you can copy values for that position to paste these values in your code.
+When you placed your item where you want you can copy values for that position by clicking `Copy IDR values` button to paste these values in your code.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807465403847934002/unknown.png)
+![](https://cdn.discordapp.com/attachments/706089456855154778/841245116856532992/unknown.png)
 
-`CopyValuesPresicion` determines how much digits after `.` should be copied.
+You can change copy format by clicking on the gear icon next to `Copy IDR values`
+
+#### Available formats
+
+* `Block`
 
 Copied values will look something like that:
 ```cs
@@ -68,6 +72,17 @@ localPos = new Vector3(-0.0007F, 0.1699F, 0.028F),
 localAngles = new Vector3(332.5399F, 359.8748F, 0.0883F),
 localScale = new Vector3(0.7228F, 0.7228F, 0.7228F)
 ```
+
+* `Inline`
+
+Copied values will look something like that:
+```cs
+"Head", new Vector3(-0.0007F, 0.1699F, 0.028F), new Vector3(332.5399F, 359.8748F, 0.0883F), new Vector3(0.7228F, 0.7228F, 0.7228F)
+```
+
+* `Custom`
+
+You can make your own format by using placeholders to specify where values should be placed.
 
 # Top panel
 ![](https://cdn.discordapp.com/attachments/706089456855154778/807280033189068820/unknown.png)
@@ -99,7 +114,8 @@ Scaling is always done in local space.
 # Keybindings
 #### General
 * `F2` - Enter `ItemDisplayPlacementHelper` scene (You need to be in the main menu)
-* `F` - Toggle fade
+* `F` - Move camera focus to currently selected item display
+* `G` - Toggle fade
 * `T` - Toggle time
 
 #### Object transform
@@ -125,6 +141,16 @@ If you have a feature in mind that would be good to have in this mod feel free t
 If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
 
 # Changelog
+**1.4.0**
+
+* Moved fade toggle from `F` to `G`
+* Now pressing `F` will nove camera focus to currently selected item display
+* Added different copy formats.
+	* `Block` - default format, the one that was used pre `1.4.0`
+	* `Inline` - all values are in one line and comma-separated without field names
+	* `Custom` - you can make your own format using available placeholders
+* Removed `Copy precision` field as it's now part of the copy format system
+
 **1.3.0**
 
 * Fixed item filter not working correctly.
