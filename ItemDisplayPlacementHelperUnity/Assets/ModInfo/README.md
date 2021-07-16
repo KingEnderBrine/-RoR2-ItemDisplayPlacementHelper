@@ -80,6 +80,13 @@ Copied values will look something like that:
 "Head", new Vector3(-0.0007F, 0.1699F, 0.028F), new Vector3(332.5399F, 359.8748F, 0.0883F), new Vector3(0.7228F, 0.7228F, 0.7228F)
 ```
 
+* `ForParsing`
+
+Copied values will look something like that:
+```cs
+Pelvis,-0.203,-0.058,0.058,63.11126,330.4519,181.0795,0.85025,0.85025,0.85025
+```
+
 * `Custom`
 
 You can make your own format by using placeholders to specify where values should be placed.
@@ -141,6 +148,11 @@ If you have a feature in mind that would be good to have in this mod feel free t
 If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
 
 # Changelog
+**1.4.1**
+
+* Added new copy format.
+	* `ForParsing` - as it stands from the name useful for parsing copied value, all values are comma-separated without any spaces in the following order: childName, localPos.xyz, localAngles.xyz, localScale.xyz. 
+
 **1.4.0**
 
 * Moved fade toggle from `F` to `G`

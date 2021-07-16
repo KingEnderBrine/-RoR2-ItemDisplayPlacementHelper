@@ -230,7 +230,7 @@ namespace ItemDisplayPlacementHelper
 
         private string ReplacePlaceHolders(string text)
         {
-            var matches = Regex.Matches(text, @"(?<!\{)\{([^\{\}:]*?)(:(.*?))?\}(?!\})");
+            var matches = Regex.Matches(text, @"(?<!\{)\{((?<modificator>.*?):)?(?<field>[^\{\}:]*?)(\.(?<subfield>.*?))?(:(?<precision>.*?))?\}(?!\})");
 
             if (matches.Count == 0)
             {
@@ -252,9 +252,11 @@ namespace ItemDisplayPlacementHelper
 
         private string ParsePlaceHolder(Match match)
         {
-            var field = match.Groups[1].Value;
+            var modificator = match.Groups["modificator"].Value?.ToLower();
+            var field = match.Groups["field"].Value;
+            var subField = match.Groups["subfield"].Value;
             var precision = 5;
-            if (match.Groups[3].Success && !int.TryParse(match.Groups[3].Value, out precision))
+            if (match.Groups["precision"].Success && !int.TryParse(match.Groups["precision"].Value, out precision))
             {
                 throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }
@@ -262,13 +264,13 @@ namespace ItemDisplayPlacementHelper
             switch (field)
             {
                 case "childName":
-                    return StringText(childNameDropdown.captionText.text);
+                    return StringText(childNameDropdown.captionText.text, modificator);
                 case "localPos":
-                    return NewVector3Text(localPosInput.CurrentValue, precision);
+                    return Vector3Text(localPosInput.CurrentValue, precision, modificator, subField);
                 case "localAngles":
-                    return NewVector3Text(localAnglesInput.CurrentValue, precision);
+                    return Vector3Text(localAnglesInput.CurrentValue, precision, modificator, subField);
                 case "localScale":
-                    return NewVector3Text(localScaleInput.CurrentValue, precision);
+                    return Vector3Text(localScaleInput.CurrentValue, precision, modificator, subField);
                 default:
                     throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }
@@ -284,18 +286,36 @@ namespace ItemDisplayPlacementHelper
                     return blockFormat;
                 case CopyFormat.Inline:
                     return inlineFormat;
+                case CopyFormat.ForParsing:
+                    return forParsing;
                 default:
                     throw new IndexOutOfRangeException();
             }
         }
 
-        private string StringText(string str)
+        private string StringText(string str, string modificator)
         {
-            return $@"""{str}""";
+            switch (modificator)
+            {
+                case "r":
+                    return str;
+                default:
+                    return $@"""{str}""";
+            }
         }
 
-        private string NewVector3Text(Vector3 vector, int precision)
+        private string Vector3Text(Vector3 vector, int precision, string modificator, string subField)
         {
+            bool raw = modificator == "r";
+            switch (subField)
+            {
+                case "x":
+                    return FloatInvariant(vector.x, precision) + (raw ? "" : "F");
+                case "y":
+                    return FloatInvariant(vector.y, precision) + (raw ? "" : "F");
+                case "z":
+                    return FloatInvariant(vector.z, precision) + (raw ? "" : "F");
+            }
             return $"new Vector3({FloatInvariant(vector.x, precision)}F, {FloatInvariant(vector.y, precision)}F, {FloatInvariant(vector.z, precision)}F)";
         }
 
@@ -311,5 +331,6 @@ localAngles = {localAngles:5},
 localScale = {localScale:5}
 ";
         private const string inlineFormat = @"{childName}, {localPos:5}, {localAngles:5}, {localScale:5}";
+        private const string forParsing = @"{r:childName},{r:localPos.x:5},{r:localPos.y:5},{r:localPos.z:5},{r:localAngles.x:5},{r:localAngles.y:5},{r:localAngles.z:5},{r:localScale.x:5},{r:localScale.y:5},{r:localScale.z:5}";
     }
 }

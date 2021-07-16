@@ -955,13 +955,13 @@ MonoBehaviour:
   m_text: '<b>Available placeholders:</b>
 
 
-    <b>{childName}</b> - Child name as <b><i>"string"</i></b>
+    <b>{m:childName}</b> - Child name as <b><i>"string"</i></b>
 
-    <b>{localPos:X}</b> - Local position as <b><i>new Vector3(...)</i></b>
+    <b>{m:localPos.z:X}</b> - Local position as <b><i>new Vector3(...)</i></b>
 
-    <b>{localRotation:X}</b> - Local rotation as <b><i>new Vector3(...)</i></b>
+    <b>{m:localRotation.z:X}</b> - Local rotation as <b><i>new Vector3(...)</i></b>
 
-    <b>{localScale:X}</b> - Local scale as <b><i>new Vector3(...)</i></b>
+    <b>{m:localScale.z:X}</b> - Local scale as <b><i>new Vector3(...)</i></b>
 
 
     <b>:X</b> - Maximum digits after the decimal point. If not specified 5 will be
@@ -1012,7 +1012,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 299
+  m_firstOverflowCharacterIndex: 313
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -1036,10 +1036,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 87651649}
-    characterCount: 338
+    characterCount: 352
     spriteCount: 0
     spaceCount: 53
-    wordCount: 56
+    wordCount: 63
     linkCount: 0
     lineCount: 9
     pageCount: 1
@@ -3152,7 +3152,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000047561818, y: 0.000015258789}
+  m_AnchoredPosition: {x: 0.000047561818, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &260455172
@@ -4963,7 +4963,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
+  m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 4
   m_firstOverflowCharacterIndex: -1
@@ -35065,7 +35065,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.500023, y: -0.5}
+  m_AnchoredPosition: {x: -7.5000305, y: -0.5}
   m_SizeDelta: {x: -35, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5606385214991579801
@@ -35565,7 +35565,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8149896100870577354}
   m_HandleRect: {fileID: 6492589898395442600}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -38253,7 +38253,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000030517578}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &8192474614567838604
