@@ -230,7 +230,7 @@ namespace ItemDisplayPlacementHelper
 
         private string ReplacePlaceHolders(string text)
         {
-            var matches = Regex.Matches(text, @"(?<!\{)\{((?<modificator>.*?):)?(?<field>[^\{\}:]*?)(\.(?<subfield>.*?))?(:(?<precision>.*?))?\}(?!\})");
+            var matches = Regex.Matches(text, @"(?<!\{)\{((?<modificator>.??):)?(?<field>[^\{\}:]*?)(\.(?<subfield>.*?))?(:(?<precision>.*?))?\}(?!\})");
 
             if (matches.Count == 0)
             {

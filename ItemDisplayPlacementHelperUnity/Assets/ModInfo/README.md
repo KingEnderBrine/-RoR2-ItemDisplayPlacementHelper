@@ -148,6 +148,10 @@ If you have a feature in mind that would be good to have in this mod feel free t
 If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
 
 # Changelog
+**1.4.2**
+
+* Fixed an issue where if placeholder didn't have a modificator parsing would fail.
+
 **1.4.1**
 
 * Added new copy format.
