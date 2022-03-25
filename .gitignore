@@ -55,8 +55,7 @@ BuildZip.bat
 *Unity/Library/
 *Unity/ExtraBepInEx/
 *Unity/Packages/**/*.*
-!*Unity/Packages/**/
-!*Unity/Packages/**/*.meta
 !*Unity/Packages/manifest.json
+!*Unity/Packages/packages-lock.json
 *.blend1
 *.blend1.meta
