@@ -49,6 +49,7 @@ crashlytics-build.properties
 
 BuildZip.bat
 *.zip
+*Unity/Assets/ThunderKitSettings
 *Unity/ThunderKit/
 *Unity/Temp/
 *Unity/Logs/

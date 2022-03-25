@@ -1,21 +1,28 @@
 {
     "name": "ItemDisplayPlacementHelper",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.Postprocessing.Runtime"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "Assembly-CSharp.refstub.dll",
         "BepInEx.dll",
         "Wwise.dll",
-        "Unity.Postprocessing.Runtime.dll",
         "Rewired_Core.dll",
-        "MonoMod.RuntimeDetour.dll"
+        "MonoMod.RuntimeDetour.dll",
+        "RoR2-nstrip.dll",
+        "GenericIK.dll",
+        "com.unity.multiplayer-hlapi.Runtime.dll",
+        "Unity.TextMeshPro.dll",
+        "RoR2.dll",
+        "UnityEngine.UI.dll",
+        "HGCSharpUtils.dll"
     ],
-    "autoReferenced": true,
-    "defineConstraints": []
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

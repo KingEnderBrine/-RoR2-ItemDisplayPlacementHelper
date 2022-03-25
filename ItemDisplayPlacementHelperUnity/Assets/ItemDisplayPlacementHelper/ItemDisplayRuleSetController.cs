@@ -11,12 +11,6 @@ namespace ItemDisplayPlacementHelper
 {
     public class ItemDisplayRuleSetController : MonoBehaviour
     {
-        private static ReadOnlyNamedAssetCollection<EquipmentDef> _ror2EquipmentDefs;
-        private static ReadOnlyNamedAssetCollection<EquipmentDef> RoR2EquipmentDefs { get => _ror2EquipmentDefs.src != null ? _ror2EquipmentDefs : (_ror2EquipmentDefs = ContentManager.FindContentPack("RoR2.BaseContent").GetValueOrDefault().equipmentDefs); }
-
-        private static ReadOnlyNamedAssetCollection<ItemDef> _ror2ItemDefs;
-        private static ReadOnlyNamedAssetCollection<ItemDef> RoR2ItemDefs { get => _ror2ItemDefs.src != null ? _ror2ItemDefs : (_ror2ItemDefs = ContentManager.FindContentPack("RoR2.BaseContent").GetValueOrDefault().itemDefs); }
-
         public enum Catalog { Item, Equipment }
 
         public GameObject rowPrefab;
@@ -38,6 +32,7 @@ namespace ItemDisplayPlacementHelper
 
         private void Awake()
         {
+            showItemsMode.AddOptions(ContentManager.allLoadedContentPacks.Where(el => el.equipmentDefs.Any() || el.itemDefs.Any()).Select(el => el.identifier).ToList());
             ModelPicker.OnModelChanged += OnModelChanged;
         }
 
@@ -167,14 +162,10 @@ namespace ItemDisplayPlacementHelper
                 if (active)
                 {
                     var itemDef = ItemCatalog.GetItemDef((ItemIndex)row.index);
-                    switch (showItemsMode.value)
+                    if (showItemsMode.value > 0)
                     {
-                        case 1:
-                            active = RoR2ItemDefs.Contains(itemDef);
-                            break;
-                        case 2:
-                            active = !RoR2ItemDefs.Contains(itemDef);
-                            break;
+                        var pack = ContentManager.FindContentPack(showItemsMode.options[showItemsMode.value].text).Value;
+                        active = pack.itemDefs.Contains(itemDef);
                     }
                 }
                 row.gameObject.SetActive(active);
@@ -185,14 +176,10 @@ namespace ItemDisplayPlacementHelper
                 if (active)
                 {
                     var equipmentDef = EquipmentCatalog.GetEquipmentDef((EquipmentIndex)row.index);
-                    switch (showItemsMode.value)
+                    if (showItemsMode.value > 0)
                     {
-                        case 1:
-                            active = RoR2EquipmentDefs.Contains(equipmentDef);
-                            break;
-                        case 2:
-                            active = !RoR2EquipmentDefs.Contains(equipmentDef);
-                            break;
+                        var pack = ContentManager.FindContentPack(showItemsMode.options[showItemsMode.value].text).Value;
+                        active = pack.equipmentDefs.Contains(equipmentDef);
                     }
                 }
                 row.gameObject.SetActive(active);

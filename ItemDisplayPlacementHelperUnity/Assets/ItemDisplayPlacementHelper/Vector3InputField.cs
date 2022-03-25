@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using RoR2;
+using System;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Animations;

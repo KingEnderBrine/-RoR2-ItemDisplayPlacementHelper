@@ -1,5 +1,6 @@
 ﻿using ItemDisplayPlacementHelper.AxisEditing;
 using RoR2;
+using RoR2.UI;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,6 +25,11 @@ namespace ItemDisplayPlacementHelper
 
             AkSoundEngine.PostEvent("Pause_All", null);
             PauseManager.onPauseEndGlobal += OnPauseEnd;
+        }
+
+        private void Start()
+        {
+            GetComponent<CursorOpener>().enabled = true;
         }
 
         private void OnDestroy()

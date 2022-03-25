@@ -6,22 +6,7 @@ namespace ItemDisplayPlacementHelper.AxisEditing
     public class LineAxisDrawer : MonoBehaviour
     {
         //https://docs.unity3d.com/ScriptReference/GL.html
-        private static Material lineMaterial;
-        private static void CreateLineMaterial()
-        {
-            if (!lineMaterial)
-            {
-                Shader shader = Shader.Find("Hidden/Internal-Colored");
-                lineMaterial = new Material(shader);
-                lineMaterial.hideFlags = HideFlags.HideAndDontSave;
-                lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
-                lineMaterial.SetInt("_ZWrite", 0);
-                lineMaterial.SetInt("_ZTest", 0);
-            }
-        }
-
+        public Material lineMaterial;
         public Color color;
         public Axis axis;
 
@@ -37,7 +22,11 @@ namespace ItemDisplayPlacementHelper.AxisEditing
 
         private void DrawLine(object source, EventArgs eventArgs)
         {
-            CreateLineMaterial();
+            if (!lineMaterial)
+            {
+                return;
+            }
+
             lineMaterial.SetPass(0);
 
             var endPoint = Vector3.zero;

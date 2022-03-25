@@ -145,9 +145,17 @@ Scaling is always done in local space.
 If you have a feature in mind that would be good to have in this mod feel free to ping `@KingEnderBrine` in RoR modding discord.
 
 
-If you want to support me, [you can do this here](https://www.buymeacoffee.com/KingEnderBrine)
-
 # Changelog
+**1.5.1**
+
+* Fixed 1 of rotation axes missing
+
+**1.5.0**
+
+* Fixes for Survivors of the Void update.
+* Fixed some icon being blured on low texture quality.
+* Dropdown for showing vanilla/modded items now will show item from selected content pack
+
 **1.4.2**
 
 * Fixed an issue where if placeholder didn't have a modificator parsing would fail.

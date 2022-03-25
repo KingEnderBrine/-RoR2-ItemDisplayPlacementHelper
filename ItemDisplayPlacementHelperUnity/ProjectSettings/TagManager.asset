@@ -3,7 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: 
+  tags:
   - Colored
   - BulletCollide
   - InitialBurst
@@ -13,11 +13,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  -
+  - 
   - Water
   - UI
-  -
-  -
+  - 
+  - 
   - FakeActor
   - NoCollision
   - Pickups
@@ -32,16 +32,16 @@ TagManager:
   - PrefabBrush
   - PostProcess
   - UI, WorldSpace
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
     uniqueID: 0
