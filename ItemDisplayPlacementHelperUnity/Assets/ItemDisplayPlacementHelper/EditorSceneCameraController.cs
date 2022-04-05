@@ -86,7 +86,7 @@ namespace ItemDisplayPlacementHelper
                                     row.Key.transform.localScale = localScale;
                                 }
                             }
-                            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitInfo, 100F, LayerMask.GetMask("World")))
+                            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out var hitInfo, 5000F, LayerMask.GetMask("World")))
                             {
                                 lerpPosition = hitInfo.point + CameraRigController.transform.forward * -1 * focusLength;
                                 lerpCameraTime = 0;

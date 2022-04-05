@@ -136,20 +136,31 @@ namespace ItemDisplayPlacementHelper
         {
             foreach (var row in itemRows.Values)
             {
-                row.ToggleDisplay(true);
+                if (row.gameObject.activeSelf)
+                {
+                    row.ToggleDisplay(true);
+                }
             }
+            characterModel.UpdateMaterials();
         }
 
         public void DisableAll()
         {
             foreach (var row in itemRows.Values)
             {
-                row.ToggleDisplay(false);
+                if (row.gameObject.activeSelf)
+                {
+                    row.ToggleDisplay(false);
+                }
             }
             foreach (var row in equipmentRows.Values)
             {
-                row.ToggleDisplay(false);
+                if (row.gameObject.activeSelf)
+                {
+                    row.ToggleDisplay(false);
+                }
             }
+
         }
 
         private void UpdateRowsVisibility()

@@ -146,6 +146,12 @@ If you have a feature in mind that would be good to have in this mod feel free t
 
 
 # Changelog
+**1.5.2**
+
+* Fixed `Enable fade` being turned on by default.
+* Now `RuntimeInspector` should be in front of the mod's UI
+* `Enable all`/`Disable all` buttons now work only on filtered items (from selected content pack and/or containing search string) instead of all.
+
 **1.5.1**
 
 * Fixed 1 of rotation axes missing

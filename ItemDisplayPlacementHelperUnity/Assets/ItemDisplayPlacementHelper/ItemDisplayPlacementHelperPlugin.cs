@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.5.1")]
+    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.5.2")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
