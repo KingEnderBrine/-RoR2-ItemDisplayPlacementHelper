@@ -57,7 +57,7 @@ namespace ItemDisplayPlacementHelper
 
         private void OnValueChanged(string value, Axis axis)
         {
-            if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var number))
+            if (!float.TryParse(value, out var number))
             {
                 return;
             }
@@ -84,7 +84,7 @@ namespace ItemDisplayPlacementHelper
         
         private void OnEditEnd(string value, Axis axis)
         {
-            if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var number))
+            if (float.TryParse(value, out var number))
             {
                 return;
             }
@@ -108,17 +108,17 @@ namespace ItemDisplayPlacementHelper
             var newValue = new Vector3(_currentValue.x, _currentValue.y, _currentValue.z);
             if (forceUpdate || (_currentValue.x != value.x && !xInput.isFocused))
             {
-                xInput.SetTextWithoutNotify(value.x.ToString(CultureInfo.InvariantCulture));
+                xInput.SetTextWithoutNotify(value.x.ToString());
                 newValue.x = value.x;
             }
             if (forceUpdate || (_currentValue.y != value.y && !yInput.isFocused))
             {
-                yInput.SetTextWithoutNotify(value.y.ToString(CultureInfo.InvariantCulture));
+                yInput.SetTextWithoutNotify(value.y.ToString());
                 newValue.y = value.y;
             }
             if (forceUpdate || (_currentValue.z != value.z && !zInput.isFocused))
             {
-                zInput.SetTextWithoutNotify(value.z.ToString(CultureInfo.InvariantCulture));
+                zInput.SetTextWithoutNotify(value.z.ToString());
                 newValue.z = value.z;
             }
 

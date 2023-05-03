@@ -146,6 +146,10 @@ If you have a feature in mind that would be good to have in this mod feel free t
 
 
 # Changelog
+**1.5.3**
+
+* Fixed incorrect separator used for number parsing resulting in inability to input decimal numbers.
+
 **1.5.2**
 
 * Fixed `Enable fade` being turned on by default.

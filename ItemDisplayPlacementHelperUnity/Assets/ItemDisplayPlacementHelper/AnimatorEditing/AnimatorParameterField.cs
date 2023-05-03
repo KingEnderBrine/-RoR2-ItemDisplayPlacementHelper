@@ -56,7 +56,7 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
                     if (currentFloatValue != floatValue)
                     {
                         currentFloatValue = floatValue;
-                        inputField.text = currentFloatValue.ToString(CultureInfo.InvariantCulture);
+                        inputField.text = currentFloatValue.ToString();
                     }
                     break;
             }
@@ -74,7 +74,7 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
                     }
                     break;
                 case AnimatorControllerParameterType.Float:
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var floatValue))
+                    if (float.TryParse(value, out var floatValue))
                     {
                         currentFloatValue = floatValue;
                         animator.SetFloat(parameter.name, floatValue);
@@ -94,9 +94,9 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
                     }
                     break;
                 case AnimatorControllerParameterType.Float:
-                    if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out _))
+                    if (!float.TryParse(value, out _))
                     {
-                        inputField.text = parameter.defaultFloat.ToString(CultureInfo.InvariantCulture);
+                        inputField.text = parameter.defaultFloat.ToString();
                     }
                     break;
             }
