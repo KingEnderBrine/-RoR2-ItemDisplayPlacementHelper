@@ -146,6 +146,10 @@ If you have a feature in mind that would be good to have in this mod feel free t
 
 
 # Changelog
+**1.5.4**
+
+* Changed decimal separator to always be `.`
+
 **1.5.3**
 
 * Fixed incorrect separator used for number parsing resulting in inability to input decimal numbers.

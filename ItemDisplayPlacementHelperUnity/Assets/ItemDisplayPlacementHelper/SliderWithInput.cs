@@ -74,7 +74,7 @@ namespace ItemDisplayPlacementHelper
                 {
                     skipAllNotifications = true;
                     slider.value = this.value;
-                    input.SetTextWithoutNotify(this.value.ToString());
+                    input.SetTextWithoutNotify(this.value.ToString(CultureInfo.InvariantCulture));
                     skipAllNotifications = false;
                 }
 
@@ -98,7 +98,7 @@ namespace ItemDisplayPlacementHelper
             slider.maxValue = Max;
             slider.value = Value;
 
-            input.SetTextWithoutNotify(value.ToString());
+            input.SetTextWithoutNotify(value.ToString(CultureInfo.InvariantCulture));
 
             skipAllNotifications = false;
         }
@@ -111,7 +111,7 @@ namespace ItemDisplayPlacementHelper
             }
             skipComponentsNotifications = true;
             Value = value;
-            input.SetTextWithoutNotify(value.ToString());
+            input.SetTextWithoutNotify(value.ToString(CultureInfo.InvariantCulture));
             skipComponentsNotifications = false;
 
         }
@@ -122,7 +122,7 @@ namespace ItemDisplayPlacementHelper
             {
                 return;
             }
-            if (!float.TryParse(value, out var num))
+            if (!float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var num))
             {
                 return;
             }
@@ -131,7 +131,7 @@ namespace ItemDisplayPlacementHelper
             Value = num;
             if (Value != num)
             {
-                input.SetTextWithoutNotify(num.ToString());
+                input.SetTextWithoutNotify(num.ToString(CultureInfo.InvariantCulture));
             }
             slider.value = num;
             skipComponentsNotifications = false;
@@ -139,7 +139,7 @@ namespace ItemDisplayPlacementHelper
 
         public void InputEndEdit(string newValue)
         {
-            if (!float.TryParse(newValue, out _))
+            if (!float.TryParse(newValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var num))
             {
                 Value = Min;
             }
