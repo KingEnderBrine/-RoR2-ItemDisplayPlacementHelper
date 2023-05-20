@@ -1,11 +1,10 @@
-﻿using ItemDisplayPlacementHelper.AxisEditing;
-using RoR2;
-using System;
-using System.Collections;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using ItemDisplayPlacementHelper.AxisEditing;
+using RoR2;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,8 +1,8 @@
-﻿using BepInEx;
+﻿using System.Collections;
+using System.Security.Permissions;
+using BepInEx;
 using BepInEx.Logging;
 using RoR2;
-using System.Collections;
-using System.Security.Permissions;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.5.4")]
+    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.6.0")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }

@@ -1,9 +1,5 @@
-﻿using RoR2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using RoR2;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +14,9 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
         public TMP_Dropdown layerDropdown;
         public TMP_InputField stateInput;
         public Button playButton;
+
+        [Space]
+        public Toggle animatorToggle;
 
         private void Awake()
         {
@@ -34,6 +33,7 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
             layerDropdown.interactable = currentAnimator;
             stateInput.interactable = currentAnimator;
             playButton.interactable = currentAnimator;
+            animatorToggle.interactable = currentAnimator;
         }
 
         private void OnModelChanged(CharacterModel model)
@@ -48,6 +48,7 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
             }
             if (currentAnimator)
             {
+                currentAnimator.enabled = animatorToggle.isOn;
                 var options = new List<TMP_Dropdown.OptionData>();
                 for (var i = 0; i < currentAnimator.layerCount; i++)
                 {
@@ -65,6 +66,14 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
             }
 
             currentAnimator.Play(stateInput.text, layerDropdown.value);
+        }
+
+        public void ToggleAnimator(bool enabled)
+        {
+            if (currentAnimator)
+            {
+                currentAnimator.enabled = enabled;
+            }
         }
     }
 }

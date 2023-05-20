@@ -1,8 +1,8 @@
-﻿using RoR2;
-using RoR2.ContentManagement;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using RoR2;
+using RoR2.ContentManagement;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,14 +30,21 @@ namespace ItemDisplayPlacementHelper
 
         private string filter;
 
+        public IReadOnlyDictionary<int, DisplayRuleGroupPreviewController> ItemRows => itemRows;
+        public IReadOnlyDictionary<int, DisplayRuleGroupPreviewController> EquipmentRows => equipmentRows;
+
+        public static ItemDisplayRuleSetController Instance { get; private set; }
+
         private void Awake()
         {
+            Instance = this;
             showItemsMode.AddOptions(ContentManager.allLoadedContentPacks.Where(el => el.equipmentDefs.Any() || el.itemDefs.Any()).Select(el => el.identifier).ToList());
             ModelPicker.OnModelChanged += OnModelChanged;
         }
 
         private void OnDestroy()
         {
+            Instance = null;
             ModelPicker.OnModelChanged -= OnModelChanged;
         }
 

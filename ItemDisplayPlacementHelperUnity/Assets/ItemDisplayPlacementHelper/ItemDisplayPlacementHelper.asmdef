@@ -19,7 +19,9 @@
         "Unity.TextMeshPro.dll",
         "RoR2.dll",
         "UnityEngine.UI.dll",
-        "HGCSharpUtils.dll"
+        "HGCSharpUtils.dll",
+        "Mono.Cecil.dll",
+        "MonoMod.Utils.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],
