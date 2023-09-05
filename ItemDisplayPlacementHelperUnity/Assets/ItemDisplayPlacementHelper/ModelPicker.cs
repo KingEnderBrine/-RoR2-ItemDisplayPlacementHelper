@@ -20,7 +20,7 @@ namespace ItemDisplayPlacementHelper
         public TextMeshProUGUI modelNameText;
 
         public delegate void OnModelChangedHandler(CharacterModel characterModel);
-        public static OnModelChangedHandler OnModelChanged;
+        public static event OnModelChangedHandler OnModelChanged;
 
         private ModelPrefabInfo modelInfo;
         private ReverseSkin reverseSkin;
@@ -164,9 +164,9 @@ namespace ItemDisplayPlacementHelper
             {
                 akEvent.enabled = false;
             }
-            foreach (var shackeEmmiter in ModelInstance.GetComponentsInChildren<ShakeEmitter>())
+            foreach (var shakeEmmiter in ModelInstance.GetComponentsInChildren<ShakeEmitter>())
             {
-                shackeEmmiter.enabled = false;
+                shakeEmmiter.enabled = false;
             }
 
             foreach (var collider in ModelInstance.GetComponentsInChildren<Collider>())
@@ -211,7 +211,7 @@ namespace ItemDisplayPlacementHelper
                 var name = Language.GetString(el.nameToken);
                 return new TMP_Dropdown.OptionData(string.IsNullOrWhiteSpace(name) ? el.name : name, el.icon);
             }).ToList());
-         
+
             skinsDropdown.gameObject.SetActive(true);
         }
 
@@ -221,12 +221,19 @@ namespace ItemDisplayPlacementHelper
             {
                 return;
             }
-            if (reverseSkin != null)
-            {
-                reverseSkin.Apply();
-            }
+
+            var oldIDRS = CharacterModel.itemDisplayRuleSet;
+
+            reverseSkin?.Apply();
+
             ModelSkinController.ApplySkin(index);
             reverseSkin = new ReverseSkin(ModelInstance, ModelSkinController.skins[ModelSkinController.currentSkinIndex]);
+
+            if (oldIDRS != CharacterModel.itemDisplayRuleSet)
+            {
+                ItemDisplayRuleSetController.Instance.DisableAll();
+                OnModelChanged?.Invoke(CharacterModel);
+            }
         }
 
         public void ToggleBodyOptions(bool enabled)

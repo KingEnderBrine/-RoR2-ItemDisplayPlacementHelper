@@ -1,4 +1,8 @@
 # Changelog
+**1.6.1**
+
+* Added support for `R2API.Skins` skin-specific IDRS
+
 **1.6.0**
 
 * Added `DynamicBones ignore TimeScale` toggle to the top panel.
