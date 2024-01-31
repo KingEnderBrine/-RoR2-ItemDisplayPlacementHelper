@@ -1,4 +1,8 @@
 # Changelog
+**1.6.2**
+
+* Fixed incorrect filtering by selected content pack if there are multiple content packs with the same identifier.
+
 **1.6.1**
 
 * Added support for `R2API.Skins` skin-specific IDRS

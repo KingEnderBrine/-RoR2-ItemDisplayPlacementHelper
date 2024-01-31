@@ -174,31 +174,28 @@ namespace ItemDisplayPlacementHelper
         {
             var filterIsEmpty = string.IsNullOrEmpty(filter);
 
+            var identifier = showItemsMode.options[showItemsMode.value].text;
+            var packs = showItemsMode.value > 0 ?
+                ContentManager.allLoadedContentPacks.Where(p => p.identifier == identifier).ToArray() :
+                null;
+
             foreach (var row in itemRows.Values)
             {
                 var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
-                if (active)
+                if (active && packs != null)
                 {
                     var itemDef = ItemCatalog.GetItemDef((ItemIndex)row.index);
-                    if (showItemsMode.value > 0)
-                    {
-                        var pack = ContentManager.FindContentPack(showItemsMode.options[showItemsMode.value].text).Value;
-                        active = pack.itemDefs.Contains(itemDef);
-                    }
+                    active = packs.Any(p => p.itemDefs.Contains(itemDef));
                 }
                 row.gameObject.SetActive(active);
             }
             foreach (var row in equipmentRows.Values)
             {
                 var active = filterIsEmpty || row.nameText.ContainsInSequence(filter);
-                if (active)
+                if (active && packs != null)
                 {
                     var equipmentDef = EquipmentCatalog.GetEquipmentDef((EquipmentIndex)row.index);
-                    if (showItemsMode.value > 0)
-                    {
-                        var pack = ContentManager.FindContentPack(showItemsMode.options[showItemsMode.value].text).Value;
-                        active = pack.equipmentDefs.Contains(equipmentDef);
-                    }
+                    active = packs.Any(p => p.equipmentDefs.Contains(equipmentDef));
                 }
                 row.gameObject.SetActive(active);
             }
