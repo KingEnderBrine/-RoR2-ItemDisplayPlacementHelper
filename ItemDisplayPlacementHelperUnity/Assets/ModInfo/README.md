@@ -1,7 +1,7 @@
 # Description
 A mod/tool to simplify process of item display placement for item/character developers.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/806917306822164510/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/1.png?raw=true)
 
 # General usage
 ### Before start
@@ -14,7 +14,7 @@ First of all, you need to enter special scene where everything happens. This can
 You can search for a model by localized name, body object name or model object name.
 By default only models that are visible in logbook are included in list, but you can include everything from `BodyCatalog` by toggle `Inlude all bodies from BodyCatalog`.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/806921419564777602/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/2.png?raw=true)
 
 ### Select DisplayRuleGroup to work with
 You can search for an item/equipment by name.
@@ -27,37 +27,37 @@ Click on a gear to start/end item display placement (All changes will be lost wh
 * `Enable all` - enable all item displays for current model (except equipment)
 * `Disable all` - enable all item displays for current model (inluding equipment)
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807277696924778516/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/3.png?raw=true)
 
 ### Select ItemDisplayRule
 Click on a row with item display prefab name to start edit it.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807279240658812938/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/4.png?raw=true)
 
 ### Edit ItemDisplayRule
 You can type in values in corresponding fields to see how item display will look on a character.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807279742885298256/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/5.png?raw=true)
 
 Or you can use Unity-like item editing on the scene:
 
 #### Moving
-![](https://cdn.discordapp.com/attachments/706089456855154778/807279850959142933/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/6.png?raw=true)
 
 #### Rotating
 White circle will rotate object around to camera view axis.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807279893179662356/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/7.png?raw=true)
 
 #### Scaling
 Gray cube in center will scale all axes simultaneously.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/807279934145298539/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/8.png?raw=true)
 
 ### Copy values
 When you placed your item where you want you can copy values for that position by clicking `Copy IDR values` button to paste these values in your code.
 
-![](https://cdn.discordapp.com/attachments/706089456855154778/841245116856532992/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/9.png?raw=true)
 
 You can change copy format by clicking on the gear icon next to `Copy IDR values`
 
@@ -92,7 +92,7 @@ Pelvis,-0.203,-0.058,0.058,63.11126,330.4519,181.0795,0.85025,0.85025,0.85025
 You can make your own format by using placeholders to specify where values should be placed.
 
 # Top panel
-![](https://cdn.discordapp.com/attachments/706089456855154778/807280033189068820/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/10.png?raw=true)
 
 ### ConfigureSensitivity
 * `Fast Coefficient` - camera movement speed multiplier when holding `SHIFT`
@@ -108,7 +108,7 @@ Toggle TimeScale between 0 and 1.
 Toggle if DynamicBones should work when TimeScale is 0
 
 ### Object Editing
-![](https://cdn.discordapp.com/attachments/706089456855154778/807280172184502352/unknown.png)
+![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/11.png?raw=true)
 
 Editing space:
 * `Global` - move/rotate object in world coordinates

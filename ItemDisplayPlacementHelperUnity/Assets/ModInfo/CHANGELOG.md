@@ -1,4 +1,8 @@
 # Changelog
+**1.7.1**
+
+* Readme update.
+
 **1.7.0**
 
 * Fixes for `Seekers of the Storm` update.
