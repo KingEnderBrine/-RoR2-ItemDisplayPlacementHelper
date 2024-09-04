@@ -27,7 +27,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 1
   PerManifest: 0
-  ExcludedManifests: []
+  ListType: 0
+  Manifests: []
   Recursive: 1
   IsFatal: 0
   Path: <StagingRoot>
@@ -114,9 +115,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 1
   stageDebugDatabases: 1
+  releaseBuild: 1
   assemblyArtifactPath: <AssemblyStaging>
   buildTarget: 5
-  buildTargetGroup: 1
 --- !u!114 &114888345249068578
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -143,6 +144,9 @@ MonoBehaviour:
   m_Name: ExecuteProcess
   m_EditorClassIdentifier: 
   Active: 1
+  PerManifest: 0
+  ListType: 0
+  Manifests: []
   workingDirectory: 
   executable: <PWD>/<ReleaseFolder>/
   arguments: []
@@ -160,8 +164,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 1
   PerManifest: 1
-  ExcludedManifests:
+  ListType: 0
+  Manifests:
   - {fileID: 11400000, guid: 2d4d09ec817c24698d35dc9bf0704fdc, type: 2}
+  - {fileID: 11400000, guid: 1e292f116071668d6ddc5583de8880fe, type: 2}
+  - {fileID: 11400000, guid: 9bbff6449e1a5460d6b9712c3ecebc9c, type: 2}
+  - {fileID: 11400000, guid: 3c1aa8733223035a521472d6b5966e62, type: 2}
   ArchiveType: 1
   Source: <ManifestStagingRoot>
   Output: <ReleaseFolder>/<ManifestName>-<ManifestVersion>.zip

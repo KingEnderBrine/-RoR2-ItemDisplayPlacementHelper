@@ -6,21 +6,14 @@
       "source": "embedded",
       "dependencies": {}
     },
-    "com.passivepicasso.simplyaddress": {
-      "version": "https://github.com/PassivePicasso/SimplyAddress.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "5ce29a6f3721804967984d15615d693828e32bea"
-    },
     "com.passivepicasso.thunderkit": {
-      "version": "https://github.com/PassivePicasso/ThunderKit.git#RC_5_0_0",
+      "version": "https://github.com/PassivePicasso/ThunderKit.git#9.0.0",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.scriptablebuildpipeline": "1.16.1"
       },
-      "hash": "b246655c79ff33409690fc8ca66043ad14405ded"
+      "hash": "2f048021a13d98a8600898a6f4203cfe18554f36"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -42,7 +35,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "1.2.16",
+      "version": "2.2.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -56,20 +49,35 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "1.2.1",
+      "version": "3.0.26",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.1"
+        "com.unity.ext.nunit": "1.0.6"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.ide.visualstudio": {
+      "version": "2.0.22",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.9"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.vscode": {
-      "version": "1.2.3",
+      "version": "1.2.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
+    },
+    "com.unity.multiplayer-hlapi": {
+      "version": "file:RoR2MultiplayerHLAPI",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.postprocessing": {
       "version": "2.3.0",
@@ -79,14 +87,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.scriptablebuildpipeline": {
-      "version": "1.16.1",
+      "version": "1.20.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.24",
+      "version": "1.1.33",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -97,19 +105,19 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.2.18",
+      "version": "1.6.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.xr.legacyinputhelpers": {
-      "version": "2.1.7",
+      "version": "2.1.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -118,17 +126,42 @@
       },
       "url": "https://packages.unity.com"
     },
+    "mmhook-assemblies": {
+      "version": "file:mmhook-assemblies",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "riskofrain2": {
       "version": "file:Risk of Rain 2",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
     },
-    "system.io.compression": {
-      "version": "file:Compression",
+    "riskofthunder-bepinex_gui": {
+      "version": "file:BepInEx_GUI",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}
+    },
+    "riskofthunder-fixplugintypesserialization": {
+      "version": "file:FixPluginTypesSerialization",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "riskofthunder-ror2bepinexpack": {
+      "version": "file:RoR2BepInExPack",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "riskofthunder-ror2importextensions": {
+      "version": "https://github.com/Nebby1999/RoR2ImportExtensions.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "01418e60d79813848f2e2fba3a52a1d5bf868366"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
@@ -263,6 +296,18 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.uielementsnative": "1.0.0"
+      }
+    },
+    "com.unity.modules.uielementsnative": {
+      "version": "1.0.0",
+      "depth": 1,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       }

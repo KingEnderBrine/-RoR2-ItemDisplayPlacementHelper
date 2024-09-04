@@ -60,3 +60,4 @@ BuildZip.bat
 !*Unity/Packages/packages-lock.json
 *.blend1
 *.blend1.meta
+*Unity/UserSettings

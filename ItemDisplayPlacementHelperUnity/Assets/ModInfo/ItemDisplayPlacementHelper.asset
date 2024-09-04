@@ -53,7 +53,7 @@ MonoBehaviour:
   Author: KingEnderBrine
   Name: ItemDisplayPlacementHelper
   Description: A mod/tool for item/character devs to simplify work with IDRS placement
-  Version: 1.6.2
+  Version: 1.7.0
   Dependencies:
   - {fileID: 11400000, guid: 2d4d09ec817c24698d35dc9bf0704fdc, type: 2}
 --- !u!114 &114431642618062350
@@ -88,6 +88,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   StagingPaths:
   - <ManifestStagingRoot>
+  includeMetaFiles: 0
   files:
   - {fileID: 2800000, guid: c5a91a664bf30b44ca78a5af65e319c2, type: 3}
   - {fileID: 4900000, guid: 69f7e81f851c0f24cabe3d8f2305cdd1, type: 3}

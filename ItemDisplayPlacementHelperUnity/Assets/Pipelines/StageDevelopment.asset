@@ -79,9 +79,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Active: 1
   stageDebugDatabases: 1
+  releaseBuild: 1
   assemblyArtifactPath: <AssemblyStaging>
   buildTarget: 5
-  buildTargetGroup: 1
 --- !u!114 &114888345249068578
 MonoBehaviour:
   m_ObjectHideFlags: 1
