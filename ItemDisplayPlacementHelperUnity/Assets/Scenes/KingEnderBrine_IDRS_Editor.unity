@@ -999,18 +999,24 @@ MonoBehaviour:
     <b>{m:childName}</b> - Child name
     as <b><i>"string"</i></b>
 
-    <b>{m:localPos.z:X}</b> - Local position as <b><i>new
-    Vector3(...)</i></b>
+    <b>{m:modelName}</b> - Model GameObject name as
+    <b><i>"string"</i></b>
 
-    <b>{m:localRotation.z:X}</b> - Local rotation as <b><i>new
-    Vector3(...)</i></b>
+    <b>{m:bodyName}</b> - Body GameObject name as <b><i>"string"</i></b>
 
-    <b>{m:localScale.z:X}</b> - Local scale as <b><i>new
-    Vector3(...)</i></b>
+    <b>{m:localPos.z:X}</b>
+    - Local position as <b><i>new Vector3(...)</i></b>
+
+    <b>{m:localRotation.z:X}</b>
+    - Local rotation as <b><i>new Vector3(...)</i></b>
+
+    <b>{m:localScale.z:X}</b>
+    - Local scale as <b><i>new Vector3(...)</i></b>
 
 
-    <b>:X</b> - Maximum digits after the decimal point.
-    If not specified 5 will be used e.g. {localPos} is the same as {localPos:5}
+    <b>:X</b> - Maximum digits
+    after the decimal point. If not specified 5 will be used e.g. {localPos} is the
+    same as {localPos:5}
 
 '
   m_isRightToLeft: 0
@@ -1034,7 +1040,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -1048,7 +1054,7 @@ MonoBehaviour:
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
-  m_textAlignment: 257
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -4573,7 +4579,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -4587,7 +4593,7 @@ MonoBehaviour:
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
-  m_textAlignment: 257
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -13413,8 +13419,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 375, y: -367.5}
-  m_SizeDelta: {x: 740, y: 205}
+  m_AnchoredPosition: {x: 375, y: -392.5}
+  m_SizeDelta: {x: 740, y: 255}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &806403761
 MonoBehaviour:
@@ -13432,7 +13438,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: -1
-  m_PreferredHeight: 205
+  m_PreferredHeight: 255
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -14882,7 +14888,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1315251151}
   m_HandleRect: {fileID: 1315251150}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -17260,7 +17266,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -17273,8 +17279,8 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 513
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -17993,7 +17999,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -9.9999695, y: 0}
-  m_SizeDelta: {x: 750, y: 475}
+  m_SizeDelta: {x: 750, y: 525}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1209391571
 MonoBehaviour:
@@ -22653,7 +22659,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -22666,8 +22672,8 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 513
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0
@@ -34509,16 +34515,6 @@ MonoBehaviour:
   m_Script: {fileID: -130519023, guid: b2ac317a67c468eb8fd6ed06da7572d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_listeners:
-    initialListenerList: []
-    useDefaultListeners: 1
-  isEnvironmentAware: 1
-  isStaticObject: 1
-  m_positionOffsetData:
-    KeepMe: 0
-    positionOffset: {x: 0, y: 0, z: 0}
-  m_posOffsetData: {fileID: 0}
-  listenerMask: 1
 --- !u!114 &4565505673322233973
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,9 @@
 # Changelog
+**1.7.2**
+
+* Fixed an issue where copying values with custom format would truncate all text after the last placeholder.
+* Added new placeholders `modelName` and `bodyName` for custom format.
+
 **1.7.1**
 
 * Readme update.

@@ -22,8 +22,8 @@ namespace ItemDisplayPlacementHelper
         public delegate void OnModelChangedHandler(CharacterModel characterModel);
         public static event OnModelChangedHandler OnModelChanged;
 
-        private ModelPrefabInfo modelInfo;
         private ReverseSkin reverseSkin;
+        public ModelPrefabInfo ModelInfo { get; private set; }
         public GameObject ModelInstance { get; private set; }
         public CharacterModel CharacterModel { get; private set; }
         public ModelSkinController ModelSkinController { get; private set; }
@@ -76,12 +76,12 @@ namespace ItemDisplayPlacementHelper
 
         public void SelectModel(object modelInfo)
         {
-            if (modelInfo as ModelPrefabInfo == this.modelInfo)
+            if (modelInfo as ModelPrefabInfo == this.ModelInfo)
             {
                 return;
             }
             DestroyModelInstance();
-            this.modelInfo = modelInfo as ModelPrefabInfo;
+            this.ModelInfo = modelInfo as ModelPrefabInfo;
             BuildModelInstance();
             ConfigureSkinVariants();
             OnModelChanged?.Invoke(CharacterModel);
@@ -107,17 +107,17 @@ namespace ItemDisplayPlacementHelper
 
         private void BuildModelInstance()
         {
-            if (modelInfo == null || ModelInstance)
+            if (ModelInfo == null || ModelInstance)
             {
                 return;
             }
             icon.color = Color.white;
-            icon.texture = modelInfo.characterBody.portraitIcon;
+            icon.texture = ModelInfo.characterBody.portraitIcon;
 
-            bodyNameText.text = modelInfo.localizedBodyName;
-            modelNameText.text = modelInfo.modelName;
+            bodyNameText.text = ModelInfo.localizedBodyName;
+            modelNameText.text = ModelInfo.modelName;
 
-            ModelInstance = Instantiate(modelInfo.modelPrefab, modelSpawnPosition.position, modelSpawnPosition.rotation);
+            ModelInstance = Instantiate(ModelInfo.modelPrefab, modelSpawnPosition.position, modelSpawnPosition.rotation);
 
             CharacterModel = ModelInstance.GetComponent<CharacterModel>();
 

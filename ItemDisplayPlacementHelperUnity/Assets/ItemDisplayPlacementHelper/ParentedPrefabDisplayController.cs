@@ -241,9 +241,18 @@ namespace ItemDisplayPlacementHelper
             for (var i = 0; i < matches.Count; i++)
             {
                 var match = matches[i];
-                builder.Append(text.Substring(textIndex, match.Index - textIndex));
+                builder.Append(text.Substring(textIndex, match.Index - textIndex).Replace("{{", "{").Replace("}}", "}"));
                 textIndex = match.Index + match.Length;
                 builder.Append(ParsePlaceHolder(match));
+            }
+
+            if (matches.Count == 0)
+            {
+                return text;
+            }
+            else if (textIndex != text.Length)
+            {
+                builder.Append(text.Substring(textIndex, text.Length - textIndex).Replace("{{", "{").Replace("}}", "}"));
             }
 
             return builder.ToString();
@@ -270,6 +279,10 @@ namespace ItemDisplayPlacementHelper
                     return Vector3Text(localAnglesInput.CurrentValue, precision, modificator, subField);
                 case "localScale":
                     return Vector3Text(localScaleInput.CurrentValue, precision, modificator, subField);
+                case "modelName":
+                    return StringText(ModelPicker.Instance.ModelInfo.modelName, modificator);
+                case "bodyName":
+                    return StringText(ModelPicker.Instance.ModelInfo.bodyName, modificator);
                 default:
                     throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }
