@@ -1,4 +1,5 @@
 ﻿using RoR2;
+using RoR2.ContentManagement;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ namespace ItemDisplayPlacementHelper
         public ReverseSkin(GameObject modelObject, SkinDef skinDef)
         {
             this.modelObject = modelObject;
-            skinDef.Bake();
+            var bakeEnumerator = skinDef.BakeAsync();
+            while (bakeEnumerator.MoveNext());
             var runtimeSkin = skinDef.runtimeSkin;
 
             baseRendererInfos.AddRange(modelObject.GetComponent<CharacterModel>().baseRendererInfos);
@@ -24,13 +26,13 @@ namespace ItemDisplayPlacementHelper
             {
                 gameObjectActivationTemplates.Add(new SkinDef.GameObjectActivationTemplate
                 {
-                    path = objectActivation.path,
+                    transformPath = objectActivation.transformPath,
                     shouldActivate = !objectActivation.shouldActivate
                 });
             }
             foreach (var meshReplacement in runtimeSkin.meshReplacementTemplates)
             {
-                var renderer = modelObject.transform.Find(meshReplacement.path).GetComponent<Renderer>();
+                var renderer = modelObject.transform.Find(meshReplacement.transformPath).GetComponent<Renderer>();
 
                 Mesh mesh = null;
                 switch (renderer)
@@ -45,8 +47,8 @@ namespace ItemDisplayPlacementHelper
 
                 meshReplacementTemplates.Add(new SkinDef.MeshReplacementTemplate
                 {
-                    path = meshReplacement.path,
-                    mesh = mesh
+                    transformPath = meshReplacement.transformPath,
+                    meshReference = new AssetOrDirectReference<Mesh> { directRef = mesh }
                 });
             }
         }
@@ -63,18 +65,18 @@ namespace ItemDisplayPlacementHelper
 
             foreach (var objectActivation in gameObjectActivationTemplates)
             {
-                transform.Find(objectActivation.path).gameObject.SetActive(objectActivation.shouldActivate);
+                transform.Find(objectActivation.transformPath).gameObject.SetActive(objectActivation.shouldActivate);
             }
             foreach (var meshReplacement in meshReplacementTemplates)
             {
-                Renderer component = transform.Find(meshReplacement.path).GetComponent<Renderer>();
+                Renderer component = transform.Find(meshReplacement.transformPath).GetComponent<Renderer>();
                 switch (component)
                 {
                     case MeshRenderer _:
-                        component.GetComponent<MeshFilter>().sharedMesh = meshReplacement.mesh;
+                        component.GetComponent<MeshFilter>().sharedMesh = meshReplacement.meshReference.directRef;
                         break;
                     case SkinnedMeshRenderer skinnedMeshRenderer:
-                        skinnedMeshRenderer.sharedMesh = meshReplacement.mesh;
+                        skinnedMeshRenderer.sharedMesh = meshReplacement.meshReference.directRef;
                         break;
                 }
             }

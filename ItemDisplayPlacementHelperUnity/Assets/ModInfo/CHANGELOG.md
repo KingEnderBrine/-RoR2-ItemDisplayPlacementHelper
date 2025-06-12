@@ -1,4 +1,7 @@
-# Changelog
+**1.7.3**
+
+* Fixed for `Memory Optimization` update.
+
 **1.7.2**
 
 * Fixed an issue where copying values with custom format would truncate all text after the last placeholder.

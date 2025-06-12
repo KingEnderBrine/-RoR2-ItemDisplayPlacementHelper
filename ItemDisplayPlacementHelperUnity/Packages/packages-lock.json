@@ -7,13 +7,13 @@
       "dependencies": {}
     },
     "com.passivepicasso.thunderkit": {
-      "version": "https://github.com/PassivePicasso/ThunderKit.git#9.0.0",
+      "version": "https://github.com/PassivePicasso/ThunderKit.git#9.1.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.scriptablebuildpipeline": "1.16.1"
       },
-      "hash": "2f048021a13d98a8600898a6f4203cfe18554f36"
+      "hash": "574342edeb55250cda0c75789f6969c8b748f4cd"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -74,10 +74,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.multiplayer-hlapi": {
-      "version": "file:RoR2MultiplayerHLAPI",
+      "version": "https://github.com/risk-of-thunder/UnityMultiplayerHLAPI.git#1.1.1",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "faf93100110c30bfeec46d5367928c18f73a6ce1"
     },
     "com.unity.postprocessing": {
       "version": "2.3.0",
@@ -132,6 +133,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "pseudopulse-seekerspatcher": {
+      "version": "file:SeekersPatcher",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "riskofrain2": {
       "version": "file:Risk of Rain 2",
       "depth": 0,
@@ -162,6 +169,12 @@
       "source": "git",
       "dependencies": {},
       "hash": "01418e60d79813848f2e2fba3a52a1d5bf868366"
+    },
+    "score-miscfixes": {
+      "version": "file:MiscFixes",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

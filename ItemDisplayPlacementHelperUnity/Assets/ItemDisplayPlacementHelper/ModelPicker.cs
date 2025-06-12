@@ -122,9 +122,13 @@ namespace ItemDisplayPlacementHelper
             CharacterModel = ModelInstance.GetComponent<CharacterModel>();
 
             ModelSkinController = ModelInstance.GetComponent<ModelSkinController>();
-            if (ModelSkinController && ModelSkinController.skins.Length != 0)
+            if (ModelSkinController)
             {
-                reverseSkin = new ReverseSkin(ModelInstance, ModelSkinController.skins[Mathf.Clamp(ModelSkinController.currentSkinIndex, 0, ModelSkinController.skins.Length - 1)]);
+                ModelSkinController.ApplySkin(0);
+                if (ModelSkinController.skins.Length != 0)
+                {
+                    reverseSkin = new ReverseSkin(ModelInstance, ModelSkinController.skins[Mathf.Clamp(ModelSkinController.currentSkinIndex, 0, ModelSkinController.skins.Length - 1)]);
+                }
             }
 
             foreach (var aimAnimator in ModelInstance.GetComponentsInChildren<AimAnimator>())
