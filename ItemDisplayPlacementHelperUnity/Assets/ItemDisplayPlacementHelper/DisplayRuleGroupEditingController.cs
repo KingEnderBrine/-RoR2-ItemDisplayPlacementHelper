@@ -16,8 +16,8 @@ namespace ItemDisplayPlacementHelper
 
         private CharacterModel characterModel;
 
-        public delegate void OnDisplayRuleGroupChangedHadler(DisplayRuleGroup displayRuleGroup);
-        public static OnDisplayRuleGroupChangedHadler OnDisplayRuleGroupChanged;
+        public delegate void OnDisplayRuleGroupChangedHandler(DisplayRuleGroup displayRuleGroup);
+        public static OnDisplayRuleGroupChangedHandler OnDisplayRuleGroupChanged;
 
         public static DisplayRuleGroupEditingController Instance { get; private set; }
         public DisplayRuleGroup DisplayRuleGroup { get; private set; }
@@ -33,14 +33,14 @@ namespace ItemDisplayPlacementHelper
         private void Awake()
         {
             Instance = this;
-            ModelPicker.OnModelChanged += OnModelChanged;
+            ModelPicker.OnModelWillChange += OnModelWillChange;
             TempRuleSet = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
             TempRuleSet.GenerateRuntimeValues();
         }
 
         private void OnDestroy()
         {
-            ModelPicker.OnModelChanged -= OnModelChanged;
+            ModelPicker.OnModelWillChange -= OnModelWillChange;
             Instance = null;
             Destroy(TempRuleSet);
         }
@@ -50,7 +50,7 @@ namespace ItemDisplayPlacementHelper
             reapplyButton.interactable = Index != -1;
         }
 
-        private void OnModelChanged(CharacterModel characterModel)
+        private void OnModelWillChange(CharacterModel characterModel)
         {
             this.characterModel = characterModel;
             SetDisplayRuleGroup(default, default, -1);

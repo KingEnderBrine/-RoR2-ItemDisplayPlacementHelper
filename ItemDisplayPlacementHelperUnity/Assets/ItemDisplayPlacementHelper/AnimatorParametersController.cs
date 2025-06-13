@@ -25,14 +25,16 @@ namespace ItemDisplayPlacementHelper
         private void Awake()
         {
             ModelPicker.OnModelChanged += OnModelChanged;
+            ModelPicker.OnModelWillChange += OnModelWillChange;
         }
 
         private void OnDestroy()
         {
             ModelPicker.OnModelChanged -= OnModelChanged;
+            ModelPicker.OnModelWillChange -= OnModelWillChange;
         }
 
-        private void OnModelChanged(CharacterModel model)
+        private void OnModelWillChange(CharacterModel model)
         {
             foreach (var row in rows)
             {
@@ -40,7 +42,10 @@ namespace ItemDisplayPlacementHelper
             }
             rows.Clear();
             currentAnimator = null;
+        }
 
+        private void OnModelChanged(CharacterModel model)
+        {
             currentModel = model;
             if (currentModel)
             {

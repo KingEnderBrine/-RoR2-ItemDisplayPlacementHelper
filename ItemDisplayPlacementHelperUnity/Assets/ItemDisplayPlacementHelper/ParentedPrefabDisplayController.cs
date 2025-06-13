@@ -62,6 +62,7 @@ namespace ItemDisplayPlacementHelper
             localScaleInput.onValueChanged += OnLocalScaleChanged;
 
             ModelPicker.OnModelChanged += OnModelChanged;
+            ModelPicker.OnModelWillChange += OnModelWillChange;
             DisplayRuleGroupEditingController.OnDisplayRuleGroupChanged += OnDisplayRuleGroupChanged;
 
             formatDropdown.AddOptions(Enum.GetNames(typeof(CopyFormat)).Select(name => new TMP_Dropdown.OptionData(name)).ToList());
@@ -70,17 +71,21 @@ namespace ItemDisplayPlacementHelper
         private void OnDestroy()
         {            
             ModelPicker.OnModelChanged -= OnModelChanged;
+            ModelPicker.OnModelWillChange -= OnModelWillChange;
             DisplayRuleGroupEditingController.OnDisplayRuleGroupChanged -= OnDisplayRuleGroupChanged;
 
             Instance = null;
         }
 
+        private void OnModelWillChange(CharacterModel characterModel)
+        {
+            ClearValues();
+            childNameDropdown.ClearOptions();
+        }
+
         private void OnModelChanged(CharacterModel characterModel)
         {
             this.characterModel = characterModel;
-
-            ClearValues();
-            childNameDropdown.ClearOptions();
 
             if (characterModel)
             {

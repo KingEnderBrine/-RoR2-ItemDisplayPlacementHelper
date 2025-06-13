@@ -21,11 +21,13 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
         private void Awake()
         {
             ModelPicker.OnModelChanged += OnModelChanged;
+            ModelPicker.OnModelWillChange += OnModelWillChange;
         }
 
         private void OnDestroy()
         {
             ModelPicker.OnModelChanged -= OnModelChanged;
+            ModelPicker.OnModelWillChange -= OnModelWillChange;
         }
 
         private void Update()
@@ -36,16 +38,20 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
             animatorToggle.interactable = currentAnimator;
         }
 
-        private void OnModelChanged(CharacterModel model)
+        private void OnModelWillChange(CharacterModel model)
         {
             layerDropdown.options.Clear();
             currentAnimator = null;
+        }
 
+        private void OnModelChanged(CharacterModel model)
+        {
             currentModel = model;
             if (currentModel)
             {
                 currentAnimator = currentModel.GetComponent<Animator>();
             }
+
             if (currentAnimator)
             {
                 currentAnimator.enabled = animatorToggle.isOn;

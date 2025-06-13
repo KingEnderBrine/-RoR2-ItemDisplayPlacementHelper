@@ -1,3 +1,7 @@
+**1.7.4**
+
+* Fixed an issue where selecting some bodies would completely freeze the game.
+
 **1.7.3**
 
 * Fixed for `Memory Optimization` update.

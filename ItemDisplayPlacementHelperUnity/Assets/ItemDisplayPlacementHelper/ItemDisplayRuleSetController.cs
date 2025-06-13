@@ -40,12 +40,14 @@ namespace ItemDisplayPlacementHelper
             Instance = this;
             showItemsMode.AddOptions(ContentManager.allLoadedContentPacks.Where(el => el.equipmentDefs.Any() || el.itemDefs.Any()).Select(el => el.identifier).ToList());
             ModelPicker.OnModelChanged += OnModelChanged;
+            ModelPicker.OnModelWillChange += OnModelWillChange;
         }
 
         private void OnDestroy()
         {
             Instance = null;
             ModelPicker.OnModelChanged -= OnModelChanged;
+            ModelPicker.OnModelWillChange -= OnModelWillChange;
         }
 
         private void Update()
@@ -60,8 +62,6 @@ namespace ItemDisplayPlacementHelper
 
         private void OnModelChanged(CharacterModel characterModel)
         {
-            ClearCurrentModel();
-            
             if (!characterModel || !characterModel.itemDisplayRuleSet)
             {
                 return;
@@ -74,7 +74,7 @@ namespace ItemDisplayPlacementHelper
             ApplyFilter(filter);
         }
 
-        private void ClearCurrentModel()
+        private void OnModelWillChange(CharacterModel model)
         {
             foreach (var row in itemRows.Values)
             {

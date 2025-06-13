@@ -1,5 +1,7 @@
 ﻿using Generics.Dynamics;
 using RoR2;
+using RoR2.ContentManagement;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -21,6 +23,7 @@ namespace ItemDisplayPlacementHelper
 
         public delegate void OnModelChangedHandler(CharacterModel characterModel);
         public static event OnModelChangedHandler OnModelChanged;
+        public static event OnModelChangedHandler OnModelWillChange;
 
         private ReverseSkin reverseSkin;
         public ModelPrefabInfo ModelInfo { get; private set; }
@@ -74,15 +77,18 @@ namespace ItemDisplayPlacementHelper
             Instance = null;
         }
 
-        public void SelectModel(object modelInfo)
+        public void SelectModel(object modelInfo) => StartCoroutine(SelectModelAsync(modelInfo));
+        public IEnumerator SelectModelAsync(object modelInfo)
         {
             if (modelInfo as ModelPrefabInfo == this.ModelInfo)
             {
-                return;
+                yield break;
             }
+
+            OnModelWillChange?.Invoke(CharacterModel);
             DestroyModelInstance();
             this.ModelInfo = modelInfo as ModelPrefabInfo;
-            BuildModelInstance();
+            yield return BuildModelInstance();
             ConfigureSkinVariants();
             OnModelChanged?.Invoke(CharacterModel);
         }
@@ -105,12 +111,13 @@ namespace ItemDisplayPlacementHelper
             reverseSkin = null;
         }
 
-        private void BuildModelInstance()
+        private IEnumerator BuildModelInstance()
         {
             if (ModelInfo == null || ModelInstance)
             {
-                return;
+                yield break;
             }
+
             icon.color = Color.white;
             icon.texture = ModelInfo.characterBody.portraitIcon;
 
@@ -124,9 +131,9 @@ namespace ItemDisplayPlacementHelper
             ModelSkinController = ModelInstance.GetComponent<ModelSkinController>();
             if (ModelSkinController)
             {
-                ModelSkinController.ApplySkin(0);
                 if (ModelSkinController.skins.Length != 0)
                 {
+                    yield return ModelSkinController.ApplySkinAsync(0, AsyncReferenceHandleUnloadType.Undefined);
                     reverseSkin = new ReverseSkin(ModelInstance, ModelSkinController.skins[Mathf.Clamp(ModelSkinController.currentSkinIndex, 0, ModelSkinController.skins.Length - 1)]);
                 }
             }
@@ -219,23 +226,25 @@ namespace ItemDisplayPlacementHelper
             skinsDropdown.gameObject.SetActive(true);
         }
 
-        public void SelectSkin(int index)
+        public void SelectSkin(int index) => StartCoroutine(SelectSkinAsync(index));
+        public IEnumerator SelectSkinAsync(int index)
         {
             if (!ModelSkinController)
             {
-                return;
+                yield break;
             }
 
             var oldIDRS = CharacterModel.itemDisplayRuleSet;
 
             reverseSkin?.Apply();
 
-            ModelSkinController.ApplySkin(index);
+            yield return ModelSkinController.ApplySkinAsync(index, AsyncReferenceHandleUnloadType.Undefined);
             reverseSkin = new ReverseSkin(ModelInstance, ModelSkinController.skins[ModelSkinController.currentSkinIndex]);
 
             if (oldIDRS != CharacterModel.itemDisplayRuleSet)
             {
                 ItemDisplayRuleSetController.Instance.DisableAll();
+                OnModelWillChange?.Invoke(CharacterModel);
                 OnModelChanged?.Invoke(CharacterModel);
             }
         }
