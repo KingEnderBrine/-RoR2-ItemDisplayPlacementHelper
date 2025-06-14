@@ -1,6 +1,7 @@
 ﻿using Generics.Dynamics;
 using RoR2;
 using RoR2.ContentManagement;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace ItemDisplayPlacementHelper
 
         public delegate void OnModelChangedHandler(CharacterModel characterModel);
         public static event OnModelChangedHandler OnModelChanged;
-        public static event OnModelChangedHandler OnModelWillChange;
+        public static event Action OnModelWillChange;
 
         private ReverseSkin reverseSkin;
         public ModelPrefabInfo ModelInfo { get; private set; }
@@ -85,7 +86,7 @@ namespace ItemDisplayPlacementHelper
                 yield break;
             }
 
-            OnModelWillChange?.Invoke(CharacterModel);
+            OnModelWillChange?.Invoke();
             DestroyModelInstance();
             this.ModelInfo = modelInfo as ModelPrefabInfo;
             yield return BuildModelInstance();
@@ -244,7 +245,7 @@ namespace ItemDisplayPlacementHelper
             if (oldIDRS != CharacterModel.itemDisplayRuleSet)
             {
                 ItemDisplayRuleSetController.Instance.DisableAll();
-                OnModelWillChange?.Invoke(CharacterModel);
+                OnModelWillChange?.Invoke();
                 OnModelChanged?.Invoke(CharacterModel);
             }
         }

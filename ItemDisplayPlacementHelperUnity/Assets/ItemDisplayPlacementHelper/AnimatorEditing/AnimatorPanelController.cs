@@ -38,7 +38,7 @@ namespace ItemDisplayPlacementHelper.AnimatorEditing
             animatorToggle.interactable = currentAnimator;
         }
 
-        private void OnModelWillChange(CharacterModel model)
+        private void OnModelWillChange()
         {
             layerDropdown.options.Clear();
             currentAnimator = null;

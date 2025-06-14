@@ -74,7 +74,7 @@ namespace ItemDisplayPlacementHelper
             ApplyFilter(filter);
         }
 
-        private void OnModelWillChange(CharacterModel model)
+        private void OnModelWillChange()
         {
             foreach (var row in itemRows.Values)
             {

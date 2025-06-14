@@ -1,3 +1,7 @@
+**1.7.5**
+
+* Fixed an issue where selecting items for editing would not show display rule options.
+
 **1.7.4**
 
 * Fixed an issue where selecting some bodies would completely freeze the game.

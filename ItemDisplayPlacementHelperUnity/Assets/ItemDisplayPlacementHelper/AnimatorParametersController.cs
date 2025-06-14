@@ -34,7 +34,7 @@ namespace ItemDisplayPlacementHelper
             ModelPicker.OnModelWillChange -= OnModelWillChange;
         }
 
-        private void OnModelWillChange(CharacterModel model)
+        private void OnModelWillChange()
         {
             foreach (var row in rows)
             {

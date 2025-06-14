@@ -77,7 +77,7 @@ namespace ItemDisplayPlacementHelper
             Instance = null;
         }
 
-        private void OnModelWillChange(CharacterModel characterModel)
+        private void OnModelWillChange()
         {
             ClearValues();
             childNameDropdown.ClearOptions();

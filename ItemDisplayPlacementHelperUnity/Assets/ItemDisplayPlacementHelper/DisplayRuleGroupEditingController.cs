@@ -34,6 +34,7 @@ namespace ItemDisplayPlacementHelper
         {
             Instance = this;
             ModelPicker.OnModelWillChange += OnModelWillChange;
+            ModelPicker.OnModelChanged += OnModelChanged;
             TempRuleSet = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
             TempRuleSet.GenerateRuntimeValues();
         }
@@ -41,6 +42,7 @@ namespace ItemDisplayPlacementHelper
         private void OnDestroy()
         {
             ModelPicker.OnModelWillChange -= OnModelWillChange;
+            ModelPicker.OnModelChanged -= OnModelChanged;
             Instance = null;
             Destroy(TempRuleSet);
         }
@@ -50,10 +52,14 @@ namespace ItemDisplayPlacementHelper
             reapplyButton.interactable = Index != -1;
         }
 
-        private void OnModelWillChange(CharacterModel characterModel)
+        private void OnModelWillChange()
+        {
+            SetDisplayRuleGroup(default, default, -1);
+        }
+
+        private void OnModelChanged(CharacterModel characterModel)
         {
             this.characterModel = characterModel;
-            SetDisplayRuleGroup(default, default, -1);
         }
 
         public void SetDisplayRuleGroup(DisplayRuleGroup displayRuleGroup, ItemDisplayRuleSetController.Catalog catalog, int index)
@@ -66,7 +72,6 @@ namespace ItemDisplayPlacementHelper
             DisplayRuleGroup = displayRuleGroup;
             Catalog = catalog;
             Index = index;
-
 
             parentedPrefabDisplays.Clear();
 
