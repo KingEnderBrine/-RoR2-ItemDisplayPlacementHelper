@@ -87,7 +87,7 @@ namespace ItemDisplayPlacementHelper
         {
             this.characterModel = characterModel;
 
-            if (characterModel)
+            if (characterModel && characterModel.childLocator)
             {
                 childNameDropdown.options.AddRange(characterModel.childLocator.transformPairs.Select(el => new TMP_Dropdown.OptionData(el.name)).ToList());
             }

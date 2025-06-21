@@ -1,3 +1,7 @@
+**1.7.6**
+
+* Fixed an error when selecting a character with a skin with no `nameToken`.
+
 **1.7.5**
 
 * Fixed an issue where selecting items for editing would not show display rule options.

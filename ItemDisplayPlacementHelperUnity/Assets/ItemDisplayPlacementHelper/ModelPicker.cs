@@ -64,7 +64,7 @@ namespace ItemDisplayPlacementHelper
                             modelPrefab = el.characterModel.gameObject,
                             bodyName = el.characterBody.name,
                             modelName = el.characterModel.name,
-                            localizedBodyName = Language.GetString(el.characterBody.baseNameToken),
+                            localizedBodyName = Language.GetString(el.characterBody.baseNameToken ?? el.characterBody.name),
                             characterBody = el.characterBody
                         };
                         return new SearchableDropdown.OptionData(modelInfo, $"{modelInfo.localizedBodyName} || {modelInfo.bodyName} || {modelInfo.modelName}");
@@ -220,8 +220,12 @@ namespace ItemDisplayPlacementHelper
 
             skinsDropdown.AddOptions(ModelSkinController.skins.Select(el =>
             {
-                var name = Language.GetString(el.nameToken);
-                return new TMP_Dropdown.OptionData(string.IsNullOrWhiteSpace(name) ? el.name : name, el.icon);
+                var name = el.nameToken is null ? el.name : Language.GetString(el.nameToken);
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    name = "<No name>";
+                }
+                return new TMP_Dropdown.OptionData(name, el.icon);
             }).ToList());
 
             skinsDropdown.gameObject.SetActive(true);
