@@ -91,6 +91,25 @@ Pelvis,-0.203,-0.058,0.058,63.11126,330.4519,181.0795,0.85025,0.85025,0.85025
 
 You can make your own format by using placeholders to specify where values should be placed.
 
+#### Placeholders description
+
+* **{m:childName}** - Child name as ***"string"***
+* **{m:modelName}** - Model GameObject name as ***"string"***
+* **{m:bodyName}** - Body GameObject name as ***"string"***
+* **{m:localPos.z:X}** - Local position as ***new Vector3(...)***
+* **{m:localAngles.z:X}** - Local rotation as ***new Vector3(...)***
+* **{m:localScale.z:X}** - Local scale as ***new Vector3(...)***
+* **{m:itemName}** - ItemDef/EquipmentDef name as ***"string"***
+* **{m:objectName}** - Current IDR GameObject name as ***"string"***
+
+**m:** - Modificator for the output value. Available options:
+* **r** - Output raw value:
+  * For a string will not add **"** around the value
+  * For a Vector3 fields will not add **F** after the value
+**:X** - Maximum digits after the decimal point. If not specified 5 will be used e.g. {localPos} is the same as {localPos:5}
+
+**.z** - For Vector3 fields you can access individual fields, not specifying any will print **new Vector3(...)**
+
 # Top panel
 ![](https://github.com/KingEnderBrine/-RoR2-ItemDisplayPlacementHelper/blob/master/Screenshots/10.png?raw=true)
 

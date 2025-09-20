@@ -1,3 +1,8 @@
+**1.7.7**
+
+* Fixed some typos in placeholders description.
+* Added new placeholders `itemName` and `objectName`.
+
 **1.7.6**
 
 * Fixed an error when selecting a character with a skin with no `nameToken`.

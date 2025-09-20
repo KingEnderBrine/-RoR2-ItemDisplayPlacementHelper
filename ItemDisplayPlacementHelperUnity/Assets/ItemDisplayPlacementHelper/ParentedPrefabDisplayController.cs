@@ -288,9 +288,27 @@ namespace ItemDisplayPlacementHelper
                     return StringText(ModelPicker.Instance.ModelInfo.modelName, modificator);
                 case "bodyName":
                     return StringText(ModelPicker.Instance.ModelInfo.bodyName, modificator);
+                case "itemName":
+                    return StringText(GetItemName(), modificator);
+                case "objectName":
+                    return StringText(ParentedPrefabDisplay.prefabReference.Result?.name ?? "", modificator);
                 default:
                     throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }
+        }
+
+        private string GetItemName()
+        {
+            if (ParentedPrefabDisplay.itemIndex != ItemIndex.None)
+            {
+                return ItemCatalog.GetItemDef(ParentedPrefabDisplay.itemIndex)?.name;
+            }
+            if (ParentedPrefabDisplay.equipmentIndex != EquipmentIndex.None)
+            {
+                return EquipmentCatalog.GetEquipmentDef(ParentedPrefabDisplay.equipmentIndex)?.name;
+            }
+
+            return "";
         }
 
         private string GetText()
