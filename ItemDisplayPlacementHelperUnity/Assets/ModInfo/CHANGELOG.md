@@ -1,3 +1,7 @@
+**1.7.8**
+
+* Fixed an issue where scaling items wouldn't work on some characters.
+
 **1.7.7**
 
 * Fixed some typos in placeholders description.

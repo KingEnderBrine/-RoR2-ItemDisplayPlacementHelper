@@ -128,6 +128,7 @@ namespace ItemDisplayPlacementHelper
             ModelInstance = Instantiate(ModelInfo.modelPrefab, modelSpawnPosition.position, modelSpawnPosition.rotation);
 
             CharacterModel = ModelInstance.GetComponent<CharacterModel>();
+            CharacterModel.constraintItemDisplaysScale = false;
 
             ModelSkinController = ModelInstance.GetComponent<ModelSkinController>();
             if (ModelSkinController)

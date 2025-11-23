@@ -3,6 +3,7 @@ using System.Security.Permissions;
 using BepInEx;
 using BepInEx.Logging;
 using RoR2;
+using RoR2.UI;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -10,7 +11,7 @@ using UnityEngine.SceneManagement;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.7.7")]
+    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.7.8")]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
@@ -49,6 +50,11 @@ namespace ItemDisplayPlacementHelper
             Console.instance.SubmitCmd(null, "host 0");
             yield return new WaitUntil(() => PreGameController.instance != null);
             NetworkManager.singleton.ServerChangeScene("KingEnderBrine_IDRS_Editor");
+
+            if (ConsoleWindow.instance)
+            {
+                Destroy(ConsoleWindow.instance.gameObject);
+            }
         }
     }
 }
