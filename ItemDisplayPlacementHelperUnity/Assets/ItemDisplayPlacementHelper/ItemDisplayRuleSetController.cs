@@ -25,6 +25,7 @@ namespace ItemDisplayPlacementHelper
 
         private readonly Dictionary<int, DisplayRuleGroupPreviewController> itemRows = new Dictionary<int, DisplayRuleGroupPreviewController>();
         private readonly Dictionary<int, DisplayRuleGroupPreviewController> equipmentRows = new Dictionary<int, DisplayRuleGroupPreviewController>();
+        private readonly Dictionary<ItemDisplayRuleSet, ItemDisplayRuleSet> fixedRuleSets = new Dictionary<ItemDisplayRuleSet, ItemDisplayRuleSet>();
 
         private CharacterModel characterModel;
 
@@ -48,6 +49,14 @@ namespace ItemDisplayPlacementHelper
             Instance = null;
             ModelPicker.OnModelChanged -= OnModelChanged;
             ModelPicker.OnModelWillChange -= OnModelWillChange;
+
+            foreach (var (_, tempRuleSet) in fixedRuleSets)
+            {
+                if (tempRuleSet)
+                {
+                    Destroy(tempRuleSet);
+                }
+            }
         }
 
         private void Update()
@@ -69,9 +78,51 @@ namespace ItemDisplayPlacementHelper
 
             this.characterModel = characterModel;
 
+            EnsureValidRuleSet(characterModel);
+
             GatherDisplayRules(this.characterModel.itemDisplayRuleSet.runtimeItemRuleGroups, itemRows, Catalog.Item);
             GatherDisplayRules(this.characterModel.itemDisplayRuleSet.runtimeEquipmentRuleGroups, equipmentRows, Catalog.Equipment);
             ApplyFilter(filter);
+        }
+
+        private void EnsureValidRuleSet(CharacterModel characterModel)
+        {
+            var ruleSet = characterModel.itemDisplayRuleSet;
+            if (fixedRuleSets.TryGetValue(ruleSet, out var newRuleSet))
+            {
+                if (newRuleSet != null)
+                {
+                    characterModel.itemDisplayRuleSet = newRuleSet;
+                }
+                return;
+            }
+
+            var childNames = characterModel.childLocator.transformPairs.Select(p => p.name).ToHashSet();
+            for (var i = 0; i < ruleSet.keyAssetRuleGroups.Length; i++)
+            {
+                var group = ruleSet.keyAssetRuleGroups[i];
+                for (var j = 0; j < group.displayRuleGroup.rules.Length; j++)
+                {
+                    var rule = group.displayRuleGroup.rules[j];
+                    if (rule.childName is null || !childNames.Contains(rule.childName))
+                    {
+                        if (!newRuleSet)
+                        {
+                            newRuleSet = Instantiate(ruleSet);
+                            ItemDisplayPlacementHelperPlugin.InstanceLogger.LogError($"Model {characterModel.name} has invalid entries in ItemDisplayRuleSet, applying temporary fix");
+                        }
+
+                        newRuleSet.keyAssetRuleGroups[i].displayRuleGroup.rules[j].childName = childNames.First();
+                    }
+                }
+            }
+
+            fixedRuleSets[ruleSet] = newRuleSet;
+            if (newRuleSet)
+            {
+                newRuleSet.GenerateRuntimeValues();
+                characterModel.itemDisplayRuleSet = newRuleSet;
+            }
         }
 
         private void OnModelWillChange()

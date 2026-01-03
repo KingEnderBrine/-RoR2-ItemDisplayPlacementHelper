@@ -1,3 +1,7 @@
+**1.7.9**
+
+* Now allows editing display rules with invalid `childName`, it will be assigned to the first transform from `ChildLocator`.
+
 **1.7.8**
 
 * Fixed an issue where scaling items wouldn't work on some characters.
