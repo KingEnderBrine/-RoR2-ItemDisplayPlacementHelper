@@ -1,3 +1,7 @@
+**1.7.10**
+
+* Fixed an issue where having an item with display rule group having `rules` as null would cause an error.
+
 **1.7.9**
 
 * Now allows editing display rules with invalid `childName`, it will be assigned to the first transform from `ChildLocator`.

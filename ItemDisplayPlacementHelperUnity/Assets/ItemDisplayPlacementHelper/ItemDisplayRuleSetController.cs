@@ -101,6 +101,11 @@ namespace ItemDisplayPlacementHelper
             for (var i = 0; i < ruleSet.keyAssetRuleGroups.Length; i++)
             {
                 var group = ruleSet.keyAssetRuleGroups[i];
+                if (group.displayRuleGroup.isEmpty)
+                {
+                    continue;
+                }
+
                 for (var j = 0; j < group.displayRuleGroup.rules.Length; j++)
                 {
                     var rule = group.displayRuleGroup.rules[j];
