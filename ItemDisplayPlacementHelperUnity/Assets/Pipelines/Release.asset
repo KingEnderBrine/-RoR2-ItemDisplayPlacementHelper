@@ -167,6 +167,7 @@ MonoBehaviour:
   ListType: 1
   Manifests:
   - {fileID: 11400000, guid: e201518e83fb4c23978881fba9e2e6dc, type: 2}
+  - {fileID: 11400000, guid: a0c82417e1b89284ab1755256206e744, type: 2}
   ArchiveType: 1
   Source: <ManifestStagingRoot>
   Output: <ReleaseFolder>/<ManifestName>-<ManifestVersion>.zip

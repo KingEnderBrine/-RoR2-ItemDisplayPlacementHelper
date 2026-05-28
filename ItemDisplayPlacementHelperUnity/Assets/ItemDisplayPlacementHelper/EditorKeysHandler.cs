@@ -80,9 +80,9 @@ namespace ItemDisplayPlacementHelper
             {
                 Time.timeScale = Time.timeScale == 0 ? 1 : 0;
             }
-            if (Input.GetKeyDown(KeyCode.F) && ParentedPrefabDisplayController.Instance && ParentedPrefabDisplayController.Instance.ParentedPrefabDisplay.instance)
+            if (Input.GetKeyDown(KeyCode.F) && ParentedPrefabDisplayController.Instance && ParentedPrefabDisplayController.Instance.ItemDisplayRule.instance)
             {
-                EditorSceneCameraController.Instance.FocusOnPoint(ParentedPrefabDisplayController.Instance.ParentedPrefabDisplay.instance.transform.position);
+                EditorSceneCameraController.Instance.FocusOnPoint(ParentedPrefabDisplayController.Instance.ItemDisplayRule.instance.transform.position);
             }
             if (Input.GetKeyDown(KeyCode.G) && cameraRigController)
             {

@@ -1,4 +1,6 @@
-﻿using RoR2;
+﻿using System;
+using ItemDisplayPlacementHelper.Editable;
+using RoR2;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,16 +9,12 @@ namespace ItemDisplayPlacementHelper
 {
     public class DisplayRuleGroupPreviewController : MonoBehaviour
     {
-        [HideInInspector]
+        [HideInInspector, NonSerialized]
         public Sprite icon;
-        [HideInInspector]
+        [HideInInspector, NonSerialized]
         public string nameText;
-        [HideInInspector]
-        public DisplayRuleGroup displayRuleGroup;
-        [HideInInspector]
-        public ItemDisplayRuleSetController.Catalog catalog;
-        [HideInInspector]
-        public int index;
+        [HideInInspector, NonSerialized]
+        public EditableDisplayRuleGroup displayRuleGroup;
 
         private CharacterModel characterModel;
 
@@ -53,29 +51,20 @@ namespace ItemDisplayPlacementHelper
         {
             textComponent.text = nameText;
             imageComponent.sprite = icon;
-            
-            switch (catalog)
-            {
-                case ItemDisplayRuleSetController.Catalog.Item:
-                    toggleComponent.isOn = characterModel.enabledItemDisplays.Contains((ItemIndex)index);
-                    break;
-                case ItemDisplayRuleSetController.Catalog.Equipment:
-                    toggleComponent.group = toggleGroupComponent;
-                    toggleComponent.isOn = characterModel.currentEquipmentDisplayIndex == (EquipmentIndex)index;
-                    break;
-            }
+
+            toggleComponent.isOn = displayRuleGroup.Enabled;
         }
 
         public void EditDisplayRuleGroup()
         {
-            if (DisplayRuleGroupEditingController.Instance.Catalog == catalog && DisplayRuleGroupEditingController.Instance.Index == index)
+            if (DisplayRuleGroupEditingController.Instance.DisplayRuleGroup == displayRuleGroup)
             {
-                DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(default, default, -1);
+                DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(null);
             }
             else
             {
                 toggleComponent.isOn = true;
-                DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(displayRuleGroup, catalog, index);
+                DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(displayRuleGroup);
             }
         }
 
@@ -88,37 +77,21 @@ namespace ItemDisplayPlacementHelper
             }
             if (display)
             {
-                switch (catalog)
-                {
-                    case ItemDisplayRuleSetController.Catalog.Item:
-                        characterModel.EnableItemDisplay((ItemIndex)index);
-                        break;
-                    case ItemDisplayRuleSetController.Catalog.Equipment:
-                        characterModel.SetEquipmentDisplay((EquipmentIndex)index);
-                        break;
-                }
+                displayRuleGroup.Enable(characterModel);
             }
             else
             {
-                switch (catalog)
+                displayRuleGroup.Disable(characterModel);
+                if (DisplayRuleGroupEditingController.Instance.DisplayRuleGroup == displayRuleGroup)
                 {
-                    case ItemDisplayRuleSetController.Catalog.Item:
-                        characterModel.DisableItemDisplay((ItemIndex)index);
-                        break;
-                    case ItemDisplayRuleSetController.Catalog.Equipment:
-                        characterModel.SetEquipmentDisplay(EquipmentIndex.None);
-                        break;
-                }
-                if (DisplayRuleGroupEditingController.Instance.Catalog == catalog && DisplayRuleGroupEditingController.Instance.Index == index)
-                {
-                    DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(default, default, -1);
+                    DisplayRuleGroupEditingController.Instance.SetDisplayRuleGroup(null);
                 }
             }
         }
 
         private void Update()
         {
-            background.enabled = DisplayRuleGroupEditingController.Instance.Catalog == catalog && DisplayRuleGroupEditingController.Instance.Index == index;
+            background.enabled = DisplayRuleGroupEditingController.Instance.DisplayRuleGroup == displayRuleGroup;
         }
     }
 }

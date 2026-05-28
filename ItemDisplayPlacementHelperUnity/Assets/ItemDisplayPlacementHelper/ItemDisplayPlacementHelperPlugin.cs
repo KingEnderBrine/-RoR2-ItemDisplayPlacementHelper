@@ -2,6 +2,7 @@
 using System.Security.Permissions;
 using BepInEx;
 using BepInEx.Logging;
+using ItemDisplayPlacementHelper.Native;
 using RoR2;
 using RoR2.UI;
 using UnityEngine;
@@ -11,9 +12,13 @@ using UnityEngine.SceneManagement;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace ItemDisplayPlacementHelper
 {
-    [BepInPlugin("com.KingEnderBrine.ItemDisplayPlacementHelper", "Item Display Placement Helper", "1.7.10")]
+    [BepInPlugin(Guid, Name, Version)]
     public class ItemDisplayPlacementHelperPlugin : BaseUnityPlugin
     {
+        public const string Guid = "com.KingEnderBrine.ItemDisplayPlacementHelper";
+        public const string Name = "Item Display Placement Helper";
+        public const string Version = "1.8.0";
+
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }
 
@@ -21,6 +26,7 @@ namespace ItemDisplayPlacementHelper
         {
             Instance = this;
 
+            NativeHelpers.Init();
             AssetsHelper.LoadAssetBundle();
             ConfigHelper.InitConfigs(Config);
         }

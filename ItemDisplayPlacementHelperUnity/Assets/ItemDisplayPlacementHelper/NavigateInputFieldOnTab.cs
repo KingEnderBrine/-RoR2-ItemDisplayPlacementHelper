@@ -13,6 +13,7 @@ namespace ItemDisplayPlacementHelper
         private TMP_InputField inputField;
 
         public MoveDirection moveDirection;
+        public Selectable staticTarget;
 
         private void Awake()
         {
@@ -25,10 +26,18 @@ namespace ItemDisplayPlacementHelper
             {
                 return;
             }
+
             if (!Input.GetKeyDown(KeyCode.Tab))
             {
                 return;
             }
+
+            if (staticTarget)
+            {
+                staticTarget.Select();
+                return;
+            }
+
             Selectable target = null;
             switch (moveDirection)
             {

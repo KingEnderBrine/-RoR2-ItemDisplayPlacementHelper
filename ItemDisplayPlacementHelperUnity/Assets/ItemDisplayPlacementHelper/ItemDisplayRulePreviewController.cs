@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using ItemDisplayPlacementHelper.Editable;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,29 +13,36 @@ namespace ItemDisplayPlacementHelper
 {
     public class ItemDisplayRulePreviewController : MonoBehaviour
     {
-        [HideInInspector]
-        public ItemDisplayRule itemDisplayRule;
-        [HideInInspector]
-        public CharacterModel.ParentedPrefabDisplay parentedPrefabDisplay;
+        [HideInInspector, NonSerialized]
+        public EditableItemDisplayRule itemDisplayRule;
 
         [SerializeField]
         private TMP_Text textComponent;
         [SerializeField]
         private Button buttonComponent;
 
-        private void Start()
-        {
-            textComponent.text = parentedPrefabDisplay.instance.name;
-        }
-
         private void Update()
         {
-            buttonComponent.interactable = !ParentedPrefabDisplayController.Instance.ParentedPrefabDisplay.Equals(parentedPrefabDisplay);
+            switch (itemDisplayRule.ruleType)
+            {
+                case ItemDisplayRuleType.ParentedPrefab:
+                {
+                    textComponent.text = itemDisplayRule.followerPrefab ? itemDisplayRule.followerPrefab.name : "No prefab";
+                    break;
+                }
+                case ItemDisplayRuleType.LimbMask:
+                {
+                    textComponent.text = "LimbMask";
+                    break;
+                }
+            }
+
+            buttonComponent.interactable = ParentedPrefabDisplayController.Instance.ItemDisplayRule != itemDisplayRule;
         }
 
         public void EditItemDisplayRule()
         {
-            ParentedPrefabDisplayController.Instance.SetItemDisplayRule(itemDisplayRule, parentedPrefabDisplay);
+            ParentedPrefabDisplayController.Instance.SetItemDisplayRule(itemDisplayRule);
         }
     }
 }

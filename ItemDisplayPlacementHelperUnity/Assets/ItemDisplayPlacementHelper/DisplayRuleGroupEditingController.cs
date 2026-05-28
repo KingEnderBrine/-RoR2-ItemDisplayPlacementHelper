@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ItemDisplayPlacementHelper.Editable;
 using RoR2;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,30 +14,24 @@ namespace ItemDisplayPlacementHelper
         public GameObject rowPrefab;
         public Transform container;
         public Button reapplyButton;
+        public Button addButton;
+        public Button deleteButton;
 
         private CharacterModel characterModel;
 
-        public delegate void OnDisplayRuleGroupChangedHandler(DisplayRuleGroup displayRuleGroup);
+        public delegate void OnDisplayRuleGroupChangedHandler(EditableDisplayRuleGroup keyAssetRuleGroup);
         public static OnDisplayRuleGroupChangedHandler OnDisplayRuleGroupChanged;
 
         public static DisplayRuleGroupEditingController Instance { get; private set; }
-        public DisplayRuleGroup DisplayRuleGroup { get; private set; }
-        public ItemDisplayRuleSetController.Catalog Catalog { get; private set; }
-        public int Index { get; private set; } = -1;
+        public EditableDisplayRuleGroup DisplayRuleGroup { get; private set; }
 
-        private readonly List<CharacterModel.ParentedPrefabDisplay> parentedPrefabDisplays = new List<CharacterModel.ParentedPrefabDisplay>();
-
-        private readonly List<GameObject> rows = new List<GameObject>();
-
-        private ItemDisplayRuleSet TempRuleSet;
+        private readonly List<ItemDisplayRulePreviewController> rows = new List<ItemDisplayRulePreviewController>();
 
         private void Awake()
         {
             Instance = this;
             ModelPicker.OnModelWillChange += OnModelWillChange;
             ModelPicker.OnModelChanged += OnModelChanged;
-            TempRuleSet = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
-            TempRuleSet.GenerateRuntimeValues();
         }
 
         private void OnDestroy()
@@ -44,17 +39,19 @@ namespace ItemDisplayPlacementHelper
             ModelPicker.OnModelWillChange -= OnModelWillChange;
             ModelPicker.OnModelChanged -= OnModelChanged;
             Instance = null;
-            Destroy(TempRuleSet);
         }
 
         private void Update()
         {
-            reapplyButton.interactable = Index != -1;
+            var hasGroup = DisplayRuleGroup is not null;
+            reapplyButton.interactable = hasGroup;
+            addButton.interactable = hasGroup;
+            deleteButton.interactable = hasGroup && ParentedPrefabDisplayController.Instance.ItemDisplayRule is not null;
         }
 
         private void OnModelWillChange()
         {
-            SetDisplayRuleGroup(default, default, -1);
+            SetDisplayRuleGroup(null);
         }
 
         private void OnModelChanged(CharacterModel characterModel)
@@ -62,110 +59,78 @@ namespace ItemDisplayPlacementHelper
             this.characterModel = characterModel;
         }
 
-        public void SetDisplayRuleGroup(DisplayRuleGroup displayRuleGroup, ItemDisplayRuleSetController.Catalog catalog, int index)
+        public void SetDisplayRuleGroup(EditableDisplayRuleGroup displayRuleGroup)
         {
-            if (DisplayRuleGroup.Equals(displayRuleGroup) && Catalog == catalog && Index == index)
+            if (DisplayRuleGroup == displayRuleGroup)
             {
                 return;
             }
 
             DisplayRuleGroup = displayRuleGroup;
-            Catalog = catalog;
-            Index = index;
 
-            parentedPrefabDisplays.Clear();
-
-            rows.ForEach(Destroy);
+            foreach (var row in rows)
+            {
+                Destroy(row.gameObject);
+            }
             rows.Clear();
 
-            if (index == -1 || !characterModel)
+            if (displayRuleGroup is null || !characterModel)
             {
                 OnDisplayRuleGroupChanged(displayRuleGroup);
                 return;
             }
 
-            switch (catalog)
+            var rules = displayRuleGroup.Rules;
+            for (var i = 0; i < rules.Count; i++)
             {
-                case ItemDisplayRuleSetController.Catalog.Item:
-                    var itemIndex = (ItemIndex)index;
-                    parentedPrefabDisplays.AddRange(characterModel.parentedPrefabDisplays.Where(el => el.itemIndex == itemIndex));
-                    break;
-                case ItemDisplayRuleSetController.Catalog.Equipment:
-                    var equipmentIndex = (EquipmentIndex)index;
-                    parentedPrefabDisplays.AddRange(characterModel.parentedPrefabDisplays.Where(el => el.equipmentIndex == equipmentIndex));
-                    break;
-            }
-            
-            for (var i = 0; i < parentedPrefabDisplays.Count; i++)
-            {
-                var row = Instantiate(rowPrefab, container);
-            
-                var itemDisplayRuleController = row.GetComponent<ItemDisplayRulePreviewController>();
-            
-                itemDisplayRuleController.itemDisplayRule = displayRuleGroup.rules[i];
-                itemDisplayRuleController.parentedPrefabDisplay = parentedPrefabDisplays[i];
-
-                var itemFollower = parentedPrefabDisplays[i].instance.GetComponent<ItemFollower>();
-                if (itemFollower && itemFollower.followerPrefab)
-                {
-                    itemFollower.StartCoroutine(AddComponentToFollowerInstanceCoroutine(itemFollower));
-                }
-
-                row.SetActive(true);
-                rows.Add(row);
+                var rule = rules[i];
+                CreateRow(rule);
             }
 
             OnDisplayRuleGroupChanged(displayRuleGroup);
         }
 
-        public void ReapplyCurrentDisplayGroup()
+        private void CreateRow(EditableItemDisplayRule rule)
         {
-            var displayRuleGroup = DisplayRuleGroup;
-            var displayRuleIndex = Array.IndexOf(displayRuleGroup.rules, ParentedPrefabDisplayController.Instance.ItemDisplayRule);
-            var rules = displayRuleGroup.rules.ToArray();
+            var row = Instantiate(rowPrefab, container);
+            var itemDisplayRuleController = row.GetComponent<ItemDisplayRulePreviewController>();
+            itemDisplayRuleController.itemDisplayRule = rule;
 
-            for (var i = 0; i < parentedPrefabDisplays.Count; i++)
-            {
-                var display = parentedPrefabDisplays[i];
-                var instance = display.instance;
-                var parent = instance.transform.parent;
-
-                var rule = rules[i];
-                rule.localPos = instance.transform.localPosition;
-                rule.localScale = instance.transform.localScale;
-                rule.localAngles = instance.transform.localEulerAngles;
-                rule.childName = characterModel.childLocator.transformPairs.FirstOrDefault(p => p.transform == parent).name;
-                rules[i] = rule;
-            }
-            displayRuleGroup.rules = rules;
-
-            DisplayRuleGroupPreviewController displayRuleGroupPreviewController;
-            if (Catalog == ItemDisplayRuleSetController.Catalog.Item)
-            {
-                displayRuleGroupPreviewController = ItemDisplayRuleSetController.Instance.ItemRows[Index];
-                TempRuleSet.runtimeItemRuleGroups[Index] = displayRuleGroup;
-            }
-            else
-            {
-                displayRuleGroupPreviewController = ItemDisplayRuleSetController.Instance.EquipmentRows[Index];
-                TempRuleSet.runtimeEquipmentRuleGroups[Index] = displayRuleGroup;
-            }
-
-            displayRuleGroupPreviewController.ToggleDisplay(false);
-            var oldIDRS = characterModel.itemDisplayRuleSet;
-            characterModel.itemDisplayRuleSet = TempRuleSet;
-            displayRuleGroupPreviewController.EditDisplayRuleGroup();
-            characterModel.itemDisplayRuleSet = oldIDRS;
-
-            ParentedPrefabDisplayController.Instance.SetItemDisplayRule(DisplayRuleGroup.rules[displayRuleIndex], parentedPrefabDisplays[displayRuleIndex]);
+            row.SetActive(true);
+            rows.Add(itemDisplayRuleController);
         }
 
-        private IEnumerator AddComponentToFollowerInstanceCoroutine(ItemFollower itemFollower)
+        public void ReapplyCurrentDisplayGroup()
         {
-            yield return new WaitUntil(() => itemFollower.followerInstance);
+            DisplayRuleGroup.Disable(characterModel);
+            DisplayRuleGroup.Enable(characterModel);
+        }
 
-            var matchLocalScale = itemFollower.followerInstance.AddComponent<MatchLocalScale>();
-            matchLocalScale.target = itemFollower.transform;
+        public void Add()
+        {
+            var rule = new EditableItemDisplayRule();
+            rule.localScale = Vector3.one;
+            DisplayRuleGroup.Rules.Add(rule);
+            CreateRow(rule);
+            rule.Enable(characterModel);
+        }
+
+        public void Delete()
+        {
+            var rule = ParentedPrefabDisplayController.Instance.ItemDisplayRule;
+            ParentedPrefabDisplayController.Instance.SetItemDisplayRule(null);
+            for (var i = 0; i < rows.Count; i++)
+            {
+                var row = rows[i];
+                if (row.itemDisplayRule == rule)
+                {
+                    rule.Disable(characterModel);
+                    rows.RemoveAt(i);
+                    DisplayRuleGroup.Rules.RemoveAt(i);
+                    Destroy(row.gameObject);
+                    break;
+                }
+            }
         }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using ItemDisplayPlacementHelper.AnimatorEditing;
 using RoR2;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ItemDisplayPlacementHelper
 {
@@ -16,6 +13,11 @@ namespace ItemDisplayPlacementHelper
 
         public Transform container;
         private readonly List<AnimatorParameterField> rows = new List<AnimatorParameterField>();
+
+        [Space]
+        public Button toggleButton;
+        public GameObject itemPanel;
+        public GameObject parametersPanel;
        
         [Space]
         public GameObject boolRowPrefab;
@@ -80,6 +82,24 @@ namespace ItemDisplayPlacementHelper
                     row.SetActive(true);
                 }
             }
+        }
+
+        public void Toggle()
+        {
+            if (parametersPanel.activeSelf)
+            {
+                parametersPanel.SetActive(false);
+                itemPanel.SetActive(true);
+            }
+            else
+            {
+                parametersPanel.SetActive(true);
+                itemPanel.SetActive(false);
+            }
+
+            var scale = toggleButton.transform.localScale;
+            scale.y *= -1;
+            toggleButton.transform.localScale = scale;
         }
     }
 }

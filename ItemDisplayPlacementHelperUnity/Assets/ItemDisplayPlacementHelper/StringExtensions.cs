@@ -13,10 +13,16 @@ namespace ItemDisplayPlacementHelper
             var lowerCaseTarget = target.ToLowerInvariant();
             var lowerCaseInput = input.ToLowerInvariant();
 
-            if (input.Length == 0 || target.Length == 0)
+            if (input.Length == 0)
             {
                 return true;
             }
+
+            if (target.Length == 0)
+            {
+                return false;
+            }
+
             if (string.IsNullOrEmpty(delimiter))
             {
                 return ProcessString(lowerCaseTarget, lowerCaseInput);
@@ -31,6 +37,38 @@ namespace ItemDisplayPlacementHelper
                 }
             }
             return false;
+        }
+
+        public static string FormatAsSplitWords(this string str)
+        {
+            if (str.Length == 0)
+            {
+                return str;
+            }
+
+            var builder = new StringBuilder(str.Length);
+            builder.Append(char.ToUpper(str[0]));
+
+            for (var i = 1; i < str.Length; i++)
+            {
+                var c = str[i];
+                if (char.IsUpper(c))
+                {
+                    builder.Append(' ');
+                    builder.Append(char.ToLower(c));
+                }
+                else
+                {
+                    builder.Append(c);
+                }
+            }
+
+            if (builder[^1] == ' ')
+            {
+                builder.Remove(builder.Length - 1, 1);
+            }
+
+            return builder.ToString();
         }
 
         private static bool ProcessString(string target, string input)

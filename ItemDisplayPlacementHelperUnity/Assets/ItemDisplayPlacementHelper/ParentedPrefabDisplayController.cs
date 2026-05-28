@@ -1,9 +1,13 @@
 ﻿using System;
-using System.Globalization;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using ItemDisplayPlacementHelper.Assets.ItemDisplayPlacementHelper;
 using ItemDisplayPlacementHelper.AxisEditing;
+using ItemDisplayPlacementHelper.Dialogs;
+using ItemDisplayPlacementHelper.Editable;
 using RoR2;
 using TMPro;
 using UnityEngine;
@@ -13,6 +17,12 @@ namespace ItemDisplayPlacementHelper
 {
     public class ParentedPrefabDisplayController : MonoBehaviour
     {
+        private static readonly Regex placeholderRegex = new Regex(@"(?<!\{)\{((?<modificator>.??):)?(?<field>[^\{\}:]*?)(\.(?<subfield>.*?))?(:(?<precision>.*?))?\}(?!\})", RegexOptions.Compiled);
+
+        public TMP_Dropdown ruleTypeDropdown;
+        public MultipleOptionsDropdown limbMaskDropdown;
+        public Button selectPrefabButton;
+        public TMP_Text prefabText;
         public TMP_Dropdown childNameDropdown;
 
         [Space]
@@ -31,8 +41,7 @@ namespace ItemDisplayPlacementHelper
         public TMP_Dropdown formatDropdown;
 
         private CharacterModel characterModel;
-        public CharacterModel.ParentedPrefabDisplay ParentedPrefabDisplay { get; private set; }
-        public ItemDisplayRule ItemDisplayRule { get; private set; }
+        public EditableItemDisplayRule ItemDisplayRule { get; private set; }
 
         public static ParentedPrefabDisplayController Instance { get; private set; }
 
@@ -65,7 +74,22 @@ namespace ItemDisplayPlacementHelper
             ModelPicker.OnModelWillChange += OnModelWillChange;
             DisplayRuleGroupEditingController.OnDisplayRuleGroupChanged += OnDisplayRuleGroupChanged;
 
+            ruleTypeDropdown.AddOptions(Enum.GetNames(typeof(ItemDisplayRuleType)).Select(name => new TMP_Dropdown.OptionData(name)).ToList());
             formatDropdown.AddOptions(Enum.GetNames(typeof(CopyFormat)).Select(name => new TMP_Dropdown.OptionData(name)).ToList());
+
+            var limbMaskNames = Enum.GetNames(typeof(LimbFlags));
+            var limbMaskValues = Enum.GetValues(typeof(LimbFlags)) as IList;
+            var limbMaskOptions = new List<MultipleOptionsDropdown.OptionData>();
+            for (var i = 0; i < limbMaskNames.Length; i++)
+            {
+                var value = (int)limbMaskValues[i];
+                if (!Utils.IsPowerOfTwo(value))
+                {
+                    continue;
+                }
+                limbMaskOptions.Add(new MultipleOptionsDropdown.OptionData(limbMaskNames[i], null, value));
+            }
+            limbMaskDropdown.AddOptions(limbMaskOptions);
         }
 
         private void OnDestroy()
@@ -93,112 +117,200 @@ namespace ItemDisplayPlacementHelper
             }
         }
 
-        private void OnDisplayRuleGroupChanged(DisplayRuleGroup displayRuleGroup)
+        private void OnDisplayRuleGroupChanged(EditableDisplayRuleGroup keyAssetRuleGroup)
         {
-            SetItemDisplayRule(default, default);
+            SetItemDisplayRule(null);
         }
 
         private void Update()
         {
-            bool instanceExists = ParentedPrefabDisplay.instance;
-            childNameDropdown.interactable = instanceExists;
+            var ruleExists = ItemDisplayRule is not null;
+            bool instanceExists = ItemDisplayRule?.instance;
+
+            ruleTypeDropdown.interactable = ruleExists;
+
+            limbMaskDropdown.interactable = ItemDisplayRule?.ruleType == ItemDisplayRuleType.LimbMask;
+
+            var isParentedPrefab = ItemDisplayRule?.ruleType == ItemDisplayRuleType.ParentedPrefab;
+
+            selectPrefabButton.interactable = isParentedPrefab;
+            childNameDropdown.interactable = isParentedPrefab;
 
             localPosInput.interactable = instanceExists;
             localAnglesInput.interactable = instanceExists;
             localScaleInput.interactable = instanceExists;
             
-            copyToClipboardButton.interactable = instanceExists;
-            editCopyFormatButton.interactable = instanceExists;
-
-            if (!instanceExists)
+            copyToClipboardButton.interactable = ruleExists;
+            editCopyFormatButton.interactable = ruleExists;
+            if (!ruleExists)
             {
                 editFormatContainer.SetActive(false);
             }
 
-            if (!ParentedPrefabDisplay.instance)
+            if (!instanceExists)
             {
                 return;
             }
 
-            localPosInput.SetValueWithoutNotify(ParentedPrefabDisplay.instance.transform.localPosition);
-            localAnglesInput.SetValueWithoutNotify(ParentedPrefabDisplay.instance.transform.localEulerAngles);
-            localScaleInput.SetValueWithoutNotify(ParentedPrefabDisplay.instance.transform.localScale);
+            localPosInput.SetValueWithoutNotify(ItemDisplayRule.instance.transform.localPosition);
+            localAnglesInput.SetValueWithoutNotify(ItemDisplayRule.instance.transform.localEulerAngles);
+            localScaleInput.SetValueWithoutNotify(ItemDisplayRule.instance.transform.localScale);
+
+            ItemDisplayRule.localPos = localPosInput.CurrentValue;
+            ItemDisplayRule.localAngles = localAnglesInput.CurrentValue;
+            ItemDisplayRule.localScale = localScaleInput.CurrentValue;
         }
 
         private void ClearValues()
         {
-            childNameDropdown.captionText.text = "";
+            prefabText.text = "No prefab";
+
+            ruleTypeDropdown.SetValueWithoutNotify(-1);
+            ruleTypeDropdown.RefreshShownValue();
+
+            limbMaskDropdown.SetValueWithoutNotify(0);
+            limbMaskDropdown.RefreshShownValue();
+
+            childNameDropdown.SetValueWithoutNotify(-1);
+            childNameDropdown.RefreshShownValue();
 
             localPosInput.ClearValues();
             localAnglesInput.ClearValues();
             localScaleInput.ClearValues();
         }
 
-        public void SetItemDisplayRule(ItemDisplayRule itemDisplayRule, CharacterModel.ParentedPrefabDisplay parentedPrefabDisplay)
+        public void SetItemDisplayRule(EditableItemDisplayRule itemDisplayRule)
         {
-            if (ItemDisplayRule.Equals(itemDisplayRule) && ParentedPrefabDisplay.Equals(parentedPrefabDisplay))
+            if (ItemDisplayRule == itemDisplayRule)
             {
                 return;
             }
 
             ClearValues();
 
-            ParentedPrefabDisplay = parentedPrefabDisplay;
             ItemDisplayRule = itemDisplayRule;
+            EditorAxisController.Instance.SetSelectedObject(ItemDisplayRule?.instance ? ItemDisplayRule.instance.transform : null);
 
-            EditorAxisController.Instance.SetSelectedObject(ParentedPrefabDisplay.instance ? ParentedPrefabDisplay.instance.transform : null);
-
-            if (!ParentedPrefabDisplay.instance)
+            if (ItemDisplayRule is null)
             {
                 return;
             }
 
-            var displayTransform = parentedPrefabDisplay.instance.transform;
+            ruleTypeDropdown.SetValueWithoutNotify((int)itemDisplayRule.ruleType);
+            ruleTypeDropdown.RefreshShownValue();
 
-            childNameDropdown.captionText.text = characterModel.childLocator.transformPairs.FirstOrDefault(el => el.transform == displayTransform.parent).name;
-            childNameDropdown.SetValueWithoutNotify(childNameDropdown.options.FindIndex(el => el.text == childNameDropdown.captionText.text));
+            limbMaskDropdown.SetValueWithoutNotify((int)itemDisplayRule.limbMask);
+            limbMaskDropdown.RefreshShownValue();
 
-            localPosInput.SetValueWithoutNotify(displayTransform.localPosition, true);
-            localAnglesInput.SetValueWithoutNotify(displayTransform.localEulerAngles, true);
-            localScaleInput.SetValueWithoutNotify(displayTransform.localScale, true);
+            prefabText.text = itemDisplayRule.followerPrefab ? itemDisplayRule.followerPrefab.name : "No prefab";
+            var displayTransform = itemDisplayRule.instance?.transform;
+            if (displayTransform)
+            {
+                var childName = characterModel.childLocator.transformPairs.FirstOrDefault(el => el.transform == displayTransform.parent).name;
+                childNameDropdown.SetValueWithoutNotify(childNameDropdown.options.FindIndex(el => el.text == childName));
+                childNameDropdown.RefreshShownValue();
+
+                localPosInput.SetValueWithoutNotify(displayTransform.localPosition, true);
+                localAnglesInput.SetValueWithoutNotify(displayTransform.localEulerAngles, true);
+                localScaleInput.SetValueWithoutNotify(displayTransform.localScale, true);
+            }
+            else
+            {
+                childNameDropdown.SetValueWithoutNotify(childNameDropdown.options.FindIndex(el => el.text == ItemDisplayRule.childName));
+                childNameDropdown.RefreshShownValue();
+
+                localPosInput.SetValueWithoutNotify(ItemDisplayRule.localPos, true);
+                localAnglesInput.SetValueWithoutNotify(ItemDisplayRule.localAngles, true);
+                localScaleInput.SetValueWithoutNotify(ItemDisplayRule.localScale, true);
+            }
+        }
+
+        public void SelectRuleType(int index)
+        {
+            ItemDisplayRule.ruleType = (ItemDisplayRuleType)index;
+            switch ((ItemDisplayRuleType)index)
+            {
+                case ItemDisplayRuleType.ParentedPrefab:
+                    characterModel.limbFlagSet.RemoveFlags(ItemDisplayRule.limbMask);
+                    ItemDisplayRule.TrySpawnInstance(characterModel);
+                    break;
+                case ItemDisplayRuleType.LimbMask:
+                    Destroy(ItemDisplayRule.instance);
+                    ItemDisplayRule.instance = null;
+                    characterModel.limbFlagSet.AddFlags(ItemDisplayRule.limbMask);
+                    break;
+            }
+            characterModel.materialsDirty = true;
+            EditorAxisController.Instance.SetSelectedObject(ItemDisplayRule?.instance ? ItemDisplayRule.instance.transform : null);
+        }
+
+        public void SelectLimbMask(int value)
+        {
+            characterModel.limbFlagSet.RemoveFlags(ItemDisplayRule.limbMask);
+            ItemDisplayRule.limbMask = (LimbFlags)value;
+            characterModel.limbFlagSet.AddFlags(ItemDisplayRule.limbMask);
+            characterModel.materialsDirty = true;
+        }
+
+        public void SelectPrefab()
+        {
+            DialogController.ShowPrefabPicker((prefab, reference, assetBundle, path) =>
+            {
+                if (ItemDisplayRule.instance)
+                {
+                    Destroy(ItemDisplayRule.instance);
+                    ItemDisplayRule.instance = null;
+                }
+
+                ItemDisplayRule.followerPrefab = prefab;
+                ItemDisplayRule.followerPrefabAddress = reference;
+                ItemDisplayRule.assetBundle = assetBundle;
+                ItemDisplayRule.assetPath = path;
+                ItemDisplayRule.referenceDiscovered = true;
+                ItemDisplayRule.TrySpawnInstance(characterModel);
+                prefabText.text = ItemDisplayRule.followerPrefab.name;
+                EditorAxisController.Instance.SetSelectedObject(ItemDisplayRule?.instance ? ItemDisplayRule.instance.transform : null);
+            });
         }
 
         public void OnLocalPosChanged(Vector3 value)
         {
-            if (!ParentedPrefabDisplay.instance)
+            if (!ItemDisplayRule.instance)
             {
                 return;
             }
-            ParentedPrefabDisplay.instance.transform.localPosition = value;
+            ItemDisplayRule.instance.transform.localPosition = value;
         }
 
         public void OnLocalAnglesChanged(Vector3 value)
         {
-            if (!ParentedPrefabDisplay.instance)
+            if (!ItemDisplayRule.instance)
             {
                 return;
             }
-            ParentedPrefabDisplay.instance.transform.localEulerAngles = value;
+            ItemDisplayRule.instance.transform.localEulerAngles = value;
         }
 
         public void OnLocalScaleChanged(Vector3 value)
         {
-            if (!ParentedPrefabDisplay.instance)
+            if (!ItemDisplayRule.instance)
             {
                 return;
             }
-            ParentedPrefabDisplay.instance.transform.localScale = value;
+            ItemDisplayRule.instance.transform.localScale = value;
         }
 
         public void SelectChild(int index)
         {
-            if (!ParentedPrefabDisplay.instance)
+            var pair = characterModel.childLocator.transformPairs[index];
+            var child = pair.transform;
+            ItemDisplayRule.childName = pair.name;
+            ItemDisplayRule.TrySpawnInstance(characterModel);
+            if (ItemDisplayRule.instance)
             {
-                return;
+                ItemDisplayRule.instance.transform.SetParent(child, false);
+                EditorAxisController.Instance.SetSelectedObject(ItemDisplayRule.instance.transform);
             }
-
-            var child = characterModel.childLocator.transformPairs[index].transform;
-            ParentedPrefabDisplay.instance.transform.SetParent(child, false);
         }
 
         public void SelectFormat(int format)
@@ -215,13 +327,15 @@ namespace ItemDisplayPlacementHelper
         {
             try
             {
+                ItemDisplayRuleSetController.Instance.FillPrefabReference(ItemDisplayRule, true);
+
                 var text = GetText();
 
                 var result = ReplacePlaceHolders(text);
 
                 GUIUtility.systemCopyBuffer = result;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 DialogController.ShowError(e.Message);
             }
@@ -234,7 +348,7 @@ namespace ItemDisplayPlacementHelper
 
         private string ReplacePlaceHolders(string text)
         {
-            var matches = Regex.Matches(text, @"(?<!\{)\{((?<modificator>.??):)?(?<field>[^\{\}:]*?)(\.(?<subfield>.*?))?(:(?<precision>.*?))?\}(?!\})");
+            var matches = placeholderRegex.Matches(text);
 
             if (matches.Count == 0)
             {
@@ -277,38 +391,34 @@ namespace ItemDisplayPlacementHelper
             switch (field)
             {
                 case "childName":
-                    return StringText(childNameDropdown.captionText.text, modificator);
+                    return TemplateHelpers.StringText(ItemDisplayRule.childName, modificator);
                 case "localPos":
-                    return Vector3Text(localPosInput.CurrentValue, precision, modificator, subField);
+                    return TemplateHelpers.Vector3Text(ItemDisplayRule.localPos, precision, modificator, subField);
                 case "localAngles":
-                    return Vector3Text(localAnglesInput.CurrentValue, precision, modificator, subField);
+                    return TemplateHelpers.Vector3Text(ItemDisplayRule.localAngles, precision, modificator, subField);
                 case "localScale":
-                    return Vector3Text(localScaleInput.CurrentValue, precision, modificator, subField);
+                    return TemplateHelpers.Vector3Text(ItemDisplayRule.localScale, precision, modificator, subField);
                 case "modelName":
-                    return StringText(ModelPicker.Instance.ModelInfo.modelName, modificator);
+                    return TemplateHelpers.StringText(ModelPicker.Instance.ModelInfo.modelName, modificator);
                 case "bodyName":
-                    return StringText(ModelPicker.Instance.ModelInfo.bodyName, modificator);
+                    return TemplateHelpers.StringText(ModelPicker.Instance.ModelInfo.bodyName, modificator);
                 case "itemName":
-                    return StringText(GetItemName(), modificator);
+                    return TemplateHelpers.StringText(DisplayRuleGroupEditingController.Instance.DisplayRuleGroup.KeyAsset.name, modificator);
                 case "objectName":
-                    return StringText(ParentedPrefabDisplay.prefabReference.Result?.name ?? "", modificator);
+                    return TemplateHelpers.StringText(ItemDisplayRule.followerPrefab?.name, modificator);
+                case "ruleType":
+                    return TemplateHelpers.EnumValue(ItemDisplayRule.ruleType, modificator);
+                case "limbMask":
+                    return TemplateHelpers.EnumFlagsValue(ItemDisplayRule.limbMask, modificator);
+                case "guid":
+                    return TemplateHelpers.StringText(ItemDisplayRule.followerPrefabAddress?.AssetGUID, modificator);
+                case "assetBundle":
+                    return TemplateHelpers.StringText(ItemDisplayRule.assetBundle, modificator);
+                case "assetPath":
+                    return TemplateHelpers.StringText(ItemDisplayRule.assetPath, modificator);
                 default:
                     throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }
-        }
-
-        private string GetItemName()
-        {
-            if (ParentedPrefabDisplay.itemIndex != ItemIndex.None)
-            {
-                return ItemCatalog.GetItemDef(ParentedPrefabDisplay.itemIndex)?.name;
-            }
-            if (ParentedPrefabDisplay.equipmentIndex != EquipmentIndex.None)
-            {
-                return EquipmentCatalog.GetEquipmentDef(ParentedPrefabDisplay.equipmentIndex)?.name;
-            }
-
-            return "";
         }
 
         private string GetText()
@@ -328,36 +438,6 @@ namespace ItemDisplayPlacementHelper
             }
         }
 
-        private string StringText(string str, string modificator)
-        {
-            switch (modificator)
-            {
-                case "r":
-                    return str;
-                default:
-                    return $@"""{str}""";
-            }
-        }
-
-        private string Vector3Text(Vector3 vector, int precision, string modificator, string subField)
-        {
-            bool raw = modificator == "r";
-            switch (subField)
-            {
-                case "x":
-                    return FloatInvariant(vector.x, precision) + (raw ? "" : "F");
-                case "y":
-                    return FloatInvariant(vector.y, precision) + (raw ? "" : "F");
-                case "z":
-                    return FloatInvariant(vector.z, precision) + (raw ? "" : "F");
-            }
-            return $"new Vector3({FloatInvariant(vector.x, precision)}F, {FloatInvariant(vector.y, precision)}F, {FloatInvariant(vector.z, precision)}F)";
-        }
-
-        private string FloatInvariant(float num, int precision)
-        {
-            return num.ToString($"0.{"".PadLeft(precision, '#')}", CultureInfo.InvariantCulture);
-        }
 
         private const string blockFormat =
 @"childName = {childName},

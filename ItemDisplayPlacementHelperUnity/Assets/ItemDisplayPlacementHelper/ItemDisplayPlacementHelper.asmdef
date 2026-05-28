@@ -1,13 +1,14 @@
 {
     "name": "ItemDisplayPlacementHelper",
-    "rootNamespace": "",
+    "rootNamespace": "ItemDisplayPlacementHelper",
     "references": [
         "Unity.Postprocessing.Runtime",
-        "com.unity.multiplayer-hlapi.Runtime"
+        "com.unity.multiplayer-hlapi.Runtime",
+        "IDRSJsonLoader"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
-    "allowUnsafeCode": false,
+    "allowUnsafeCode": true,
     "overrideReferences": true,
     "precompiledReferences": [
         "BepInEx.dll",
@@ -21,7 +22,9 @@
         "Mono.Cecil.dll",
         "MonoMod.Utils.dll",
         "AK.Wwise.Unity.API.dll",
-        "AK.Wwise.Unity.MonoBehaviour.dll"
+        "AK.Wwise.Unity.MonoBehaviour.dll",
+        "Unity.ResourceManager.dll",
+        "Unity.Addressables.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

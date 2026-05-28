@@ -12,7 +12,7 @@ namespace ItemDisplayPlacementHelper
 {
     [AddComponentMenu("UI/Searchable Dropdown", 35)]
     [RequireComponent(typeof(RectTransform))]
-    public class SearchableDropdown : TMP_InputField, IEventSystemHandler, ICancelHandler
+    public partial class SearchableDropdown : TMP_InputField, IEventSystemHandler, ICancelHandler
     {
         [SerializeField]
         private RectTransform m_Template;
@@ -355,11 +355,16 @@ namespace ItemDisplayPlacementHelper
             return gameObject;
         }
 
-        protected virtual void DestroyBlocker(GameObject blocker) => DestroyImmediate(blocker);
 
         protected virtual GameObject CreateDropdownList(GameObject template) => Instantiate(template);
 
+#if UNITY_EDITOR
+        protected virtual void DestroyBlocker(GameObject blocker) => DestroyImmediate(blocker);
         protected virtual void DestroyDropdownList(GameObject dropdownList) => DestroyImmediate(dropdownList);
+#else
+        protected virtual void DestroyBlocker(GameObject blocker) => Destroy(blocker);
+        protected virtual void DestroyDropdownList(GameObject dropdownList) => Destroy(dropdownList);
+#endif
 
         protected virtual DropdownItem CreateItem(DropdownItem itemTemplate) => Instantiate(itemTemplate);
 
@@ -499,115 +504,6 @@ namespace ItemDisplayPlacementHelper
         [Serializable]
         public class DropdownEvent : UnityEvent<object>
         {
-        }
-
-        internal class FloatTweenRunner
-        {
-            protected MonoBehaviour m_CoroutineContainer;
-            protected IEnumerator m_Tween;
-
-            private static IEnumerator Start(FloatTween tweenInfo)
-            {
-                if (tweenInfo.ValidTarget())
-                {
-                    float elapsedTime = 0.0f;
-                    while ((double)elapsedTime < (double)tweenInfo.duration)
-                    {
-                        elapsedTime += tweenInfo.ignoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
-                        tweenInfo.TweenValue(Mathf.Clamp01(elapsedTime / tweenInfo.duration));
-                        yield return (object)null;
-                    }
-                    tweenInfo.TweenValue(1f);
-                }
-            }
-
-            public void Init(MonoBehaviour coroutineContainer) => this.m_CoroutineContainer = coroutineContainer;
-
-            public void StartTween(FloatTween info)
-            {
-                if (this.m_CoroutineContainer == null)
-                {
-                    Debug.LogWarning((object)"Coroutine container not configured... did you forget to call Init?");
-                }
-                else
-                {
-                    this.StopTween();
-                    if (!this.m_CoroutineContainer.gameObject.activeInHierarchy)
-                    {
-                        info.TweenValue(1f);
-                    }
-                    else
-                    {
-                        this.m_Tween = FloatTweenRunner.Start(info);
-                        this.m_CoroutineContainer.StartCoroutine(this.m_Tween);
-                    }
-                }
-            }
-
-            public void StopTween()
-            {
-                if (this.m_Tween == null)
-                    return;
-                this.m_CoroutineContainer.StopCoroutine(this.m_Tween);
-                this.m_Tween = (IEnumerator)null;
-            }
-        }
-
-        internal struct FloatTween
-        {
-            private FloatTween.FloatTweenCallback m_Target;
-            private float m_StartValue;
-            private float m_TargetValue;
-            private float m_Duration;
-            private bool m_IgnoreTimeScale;
-
-            public float startValue
-            {
-                get => this.m_StartValue;
-                set => this.m_StartValue = value;
-            }
-
-            public float targetValue
-            {
-                get => this.m_TargetValue;
-                set => this.m_TargetValue = value;
-            }
-
-            public float duration
-            {
-                get => this.m_Duration;
-                set => this.m_Duration = value;
-            }
-
-            public bool ignoreTimeScale
-            {
-                get => this.m_IgnoreTimeScale;
-                set => this.m_IgnoreTimeScale = value;
-            }
-
-            public void TweenValue(float floatPercentage)
-            {
-                if (!this.ValidTarget())
-                    return;
-                this.m_Target.Invoke(Mathf.Lerp(this.m_StartValue, this.m_TargetValue, floatPercentage));
-            }
-
-            public void AddOnChangedCallback(UnityAction<float> callback)
-            {
-                if (this.m_Target == null)
-                    this.m_Target = new FloatTween.FloatTweenCallback();
-                this.m_Target.AddListener(callback);
-            }
-
-            public bool GetIgnoreTimescale() => this.m_IgnoreTimeScale;
-
-            public float GetDuration() => this.m_Duration;
-
-            public bool ValidTarget() => this.m_Target != null;
-
-            public class FloatTweenCallback : UnityEvent<float>
-            {
-            }
         }
     }
 }

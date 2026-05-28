@@ -16,4 +16,7 @@
         XYZ = X | Y | Z
     }
     public enum CopyFormat { Custom, Block, Inline, ForParsing }
+    public enum PrefabSource { Addressables, AssetBundle }
+    public enum ImportType { ReplaceSet, AddOrUpdateGroups }
+    public enum AssetsToExport { All, Filtered, Enabled }
 }
