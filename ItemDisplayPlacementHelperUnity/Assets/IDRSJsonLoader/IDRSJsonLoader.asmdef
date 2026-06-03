@@ -10,7 +10,8 @@
         "RoR2.dll",
         "BepInEx.dll",
         "HGCSharpUtils.dll",
-        "Unity.Addressables.dll"
+        "Unity.Addressables.dll",
+        "R2API.Skins.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

@@ -416,6 +416,13 @@ namespace ItemDisplayPlacementHelper
                     return TemplateHelpers.StringText(ItemDisplayRule.assetBundle, modificator);
                 case "assetPath":
                     return TemplateHelpers.StringText(ItemDisplayRule.assetPath, modificator);
+                case "skinName":
+                {
+                    var controller = ModelPicker.Instance.ModelSkinController;
+                    var skinDef = HG.ArrayUtils.GetSafe(controller.skins, controller.currentSkinIndex);
+                    var skinName = skinDef ? skinDef.name : "";
+                    return TemplateHelpers.StringText(skinName, modificator);
+                }
                 default:
                     throw new ArgumentException($"Failed to parse placeholder {match.Value}");
             }

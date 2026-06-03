@@ -11,6 +11,7 @@ using HG.Coroutines;
 using UnityEngine.AddressableAssets;
 using System;
 using System.IO;
+using R2API;
 
 [assembly:SearchableAttribute.OptIn]
 namespace IDRSJsonLoader
@@ -22,7 +23,7 @@ namespace IDRSJsonLoader
     {
         public const string Guid = "com.KingEnderBrine.IDRSJsonLoader";
         public const string Name = "IDRS Json Loader";
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.1";
 
         internal static IDRSJsonLoaderPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }
@@ -74,6 +75,7 @@ namespace IDRSJsonLoader
         {
             var assetBundles = AssetBundle.GetAllLoadedAssetBundles().ToDictionary(b => b.name);
             var assetsByIdrs = new Dictionary<ItemDisplayRuleSet, Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup>>();
+            var assetsBySkinDef = new Dictionary<SkinDef, Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup>>();
 
             foreach (var replacementInfo in delayedReplacementInfos)
             {
@@ -85,6 +87,7 @@ namespace IDRSJsonLoader
                         var bodyPrefab = BodyCatalog.FindBodyPrefab(exportIdrs.bodyName);
                         if (bodyPrefab)
                         {
+                            var body = bodyPrefab.GetComponent<CharacterBody>();
                             var model = bodyPrefab.GetComponent<ModelLocator>()?.modelTransform?.GetComponent<CharacterModel>();
                             if (model)
                             {
@@ -92,30 +95,55 @@ namespace IDRSJsonLoader
                                 {
                                     model.itemDisplayRuleSet = ScriptableObject.CreateInstance<ItemDisplayRuleSet>();
                                 }
-                                replacementInfo.idrs = model.itemDisplayRuleSet;
+                                if (!string.IsNullOrEmpty(exportIdrs.skinName))
+                                {
+                                    var skinDefs = SkinCatalog.GetBodySkinDefs(body.bodyIndex);
+                                    replacementInfo.skinDef = skinDefs.FirstOrDefault(s => s.name == exportIdrs.skinName);
+                                }
+                                else
+                                {
+                                    replacementInfo.idrs = model.itemDisplayRuleSet;
+                                }
                             }
                         }
                     }
                 }
 
+                Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup> groupByAsset = null;
                 if (replacementInfo.idrs)
                 {
-                    if (!assetsByIdrs.TryGetValue(replacementInfo.idrs, out var groupByAsset))
+                    if (!assetsByIdrs.TryGetValue(replacementInfo.idrs, out groupByAsset))
                     {
                         assetsByIdrs[replacementInfo.idrs] = groupByAsset = new Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup>();
                     }
+                }
+                else if (replacementInfo.skinDef)
+                {
+                    if (!assetsBySkinDef.TryGetValue(replacementInfo.skinDef, out groupByAsset))
+                    {
+                        assetsBySkinDef[replacementInfo.skinDef] = groupByAsset = new Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup>();
+                    }
+                }
 
+                if (groupByAsset is not null)
+                {
                     for (int i = 0; i < exportIdrs.itemGroups.Count; i++)
                     {
                         var group = exportIdrs.itemGroups[i];
                         var keyAsset = ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex(group.name));
-                        groupByAsset[keyAsset] = group;
+                        if (keyAsset)
+                        {
+                            groupByAsset[keyAsset] = group;
+                        }
                     }
                     for (int i = 0; i < exportIdrs.equipmentGroups.Count; i++)
                     {
                         var group = exportIdrs.equipmentGroups[i];
                         var keyAsset = EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(group.name));
-                        groupByAsset[keyAsset] = group;
+                        if (keyAsset)
+                        {
+                            groupByAsset[keyAsset] = group;
+                        }
                     }
                 }
             }
@@ -147,6 +175,24 @@ namespace IDRSJsonLoader
                 foreach (var (keyAsset, group) in groupByAsset)
                 {
                     var enumerator = MapGroup(idrs, offset++, keyAsset, group, assetBundles);
+                    if (enumerator.MoveNext())
+                    {
+                        assetsCoroutine ??= new ParallelCoroutine();
+                        assetsCoroutine.Add(enumerator);
+                    }
+                }
+            }
+
+            foreach (var (skinDef, groupByAsset) in assetsBySkinDef)
+            {
+                if (groupByAsset.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (var (keyAsset, group) in groupByAsset)
+                {
+                    var enumerator = MapGroup(skinDef, keyAsset, group, assetBundles);
                     if (enumerator.MoveNext())
                     {
                         assetsCoroutine ??= new ParallelCoroutine();
@@ -206,6 +252,32 @@ namespace IDRSJsonLoader
             }
 
             idrs.keyAssetRuleGroups[index] = group;
+        }
+
+        private static IEnumerator MapGroup(SkinDef skinDef, UnityEngine.Object keyAsset, ExportKeyAssetRuleGroup exportGroup, Dictionary<string, AssetBundle> assetBundles)
+        {
+            ParallelCoroutine coroutine = null;
+            var group = new DisplayRuleGroup();
+            group.rules = new ItemDisplayRule[exportGroup.rules.Count];
+            for (var i = 0; i < exportGroup.rules.Count; i++)
+            {
+                var enumerator = MapRule(group.rules, i, exportGroup.rules[i], assetBundles);
+                if (enumerator.MoveNext())
+                {
+                    coroutine ??= new ParallelCoroutine();
+                    coroutine.Add(enumerator);
+                }
+            }
+
+            if (coroutine is not null)
+            {
+                while (coroutine.MoveNext())
+                {
+                    yield return null;
+                }
+            }
+
+            SkinIDRS.AddGroupOverride(skinDef, keyAsset, group);
         }
 
         private static IEnumerator MapRule(ItemDisplayRule[] rules, int index, ExportItemDisplayRule exportRule, Dictionary<string, AssetBundle> assetBundles)

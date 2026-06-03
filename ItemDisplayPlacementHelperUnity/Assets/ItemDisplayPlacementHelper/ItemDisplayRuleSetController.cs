@@ -211,7 +211,7 @@ namespace ItemDisplayPlacementHelper
 
         public void Export()
         {
-            DialogController.ShowExport((path, assetsToExport, generateClass, @namespace) =>
+            DialogController.ShowExport((path, assetsToExport, generateClass, @namespace, withSkin) =>
             {
                 try
                 {
@@ -235,6 +235,12 @@ namespace ItemDisplayPlacementHelper
 
                     var idrs = new ExportItemDisplayRuleSet();
                     idrs.bodyName = ModelPicker.Instance.ModelInfo.bodyName;
+                    if (withSkin)
+                    {
+                        var controller = ModelPicker.Instance.ModelSkinController;
+                        var skinDef = HG.ArrayUtils.GetSafe(controller.skins, controller.currentSkinIndex);
+                        idrs.skinName = skinDef ? skinDef.name : "";
+                    }
                     foreach (var row in rows)
                     {
                         var displayRuleGroup = row.displayRuleGroup;

@@ -1,3 +1,8 @@
+**1.8.1**
+
+* Added new placeholder `skinName` for custom format.
+* Added a toggle to include current skin name in the `.idrsjson` for skin-specific rules.
+
 **1.8.0**
 
 * ItemDisplayRuleSet is now fully editable at runtime.

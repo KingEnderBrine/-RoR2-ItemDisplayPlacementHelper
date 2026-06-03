@@ -24,7 +24,8 @@
         "AK.Wwise.Unity.API.dll",
         "AK.Wwise.Unity.MonoBehaviour.dll",
         "Unity.ResourceManager.dll",
-        "Unity.Addressables.dll"
+        "Unity.Addressables.dll",
+        "HGUnityUtils.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

@@ -19,6 +19,7 @@ namespace ItemDisplayPlacementHelper
         public static ConfigEntry<bool> ExportGenerateClass { get; private set; }
         public static ConfigEntry<AssetsToExport> ExportAssetsToExport { get; private set; }
         public static ConfigEntry<ImportType> ImportImportType { get; private set; }
+        public static ConfigEntry<bool> ExportWithSkin { get; private set; }
 
         internal static void InitConfigs(ConfigFile config)
         {
@@ -32,6 +33,7 @@ namespace ItemDisplayPlacementHelper
             ExportGenerateClass = config.Bind("Cache", nameof(ExportGenerateClass), false);
             ExportNamespace = config.Bind("Cache", nameof(ExportNamespace), "");
             ExportAssetsToExport = config.Bind("Cache", nameof(ExportAssetsToExport), AssetsToExport.All);
+            ExportWithSkin = config.Bind("Cache", nameof(ExportWithSkin), false);
             ImportImportType = config.Bind("Cache", nameof(ImportImportType), ImportType.ReplaceSet);
             config.SaveOnConfigSet = true;
             config.Save();

@@ -11,6 +11,7 @@ namespace IDRSJsonLoader.Models
     {
         public ExportItemDisplayRuleSet exportIdrs;
         public ParseCallback beforeGenerateRuntimeValues;
-        internal ItemDisplayRuleSet idrs;
+        public ItemDisplayRuleSet idrs;
+        public SkinDef skinDef; 
     }
 }

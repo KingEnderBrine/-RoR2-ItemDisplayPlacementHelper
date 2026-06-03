@@ -8,11 +8,12 @@ using UnityEngine.UI;
 namespace ItemDisplayPlacementHelper.Dialogs
 {
 
-    public delegate void ExportHandler(string path, AssetsToExport assetsToExport, bool generateClass, string @namespace);
+    public delegate void ExportHandler(string path, AssetsToExport assetsToExport, bool generateClass, string @namespace, bool withSkin);
     public class ExportDialogController : MonoBehaviour
     {
         public TMP_Dropdown exportSourceDropdown;
         public TMP_InputField pathField;
+        public Toggle withSkinToggle;
         public Toggle classToggle;
         public TMP_InputField namespaceField;
 
@@ -24,6 +25,7 @@ namespace ItemDisplayPlacementHelper.Dialogs
             exportSourceDropdown.value = (int)ConfigHelper.ExportAssetsToExport.Value;
             classToggle.isOn = ConfigHelper.ExportGenerateClass.Value;
             namespaceField.text = ConfigHelper.ExportNamespace.Value;
+            withSkinToggle.isOn = ConfigHelper.ExportWithSkin.Value;
         }
 
         public void SelectPath()
@@ -65,15 +67,17 @@ namespace ItemDisplayPlacementHelper.Dialogs
             var assetsToExport = (AssetsToExport)exportSourceDropdown.value;
             var generateClass = classToggle.isOn;
             var @namespace = namespaceField.text;
+            var withSkin = withSkinToggle.isOn;
 
             ConfigHelper.ConfigFile.SaveOnConfigSet = false;
             ConfigHelper.ExportAssetsToExport.Value = assetsToExport;
             ConfigHelper.ExportGenerateClass.Value = generateClass;
             ConfigHelper.ExportNamespace.Value = @namespace;
+            ConfigHelper.ExportWithSkin.Value = withSkin;
             ConfigHelper.ConfigFile.SaveOnConfigSet = true;
             ConfigHelper.ConfigFile.Save();
 
-            onExport?.Invoke(pathField.text, assetsToExport, generateClass, @namespace);
+            onExport?.Invoke(pathField.text, assetsToExport, generateClass, @namespace, withSkin);
 
             DialogController.HideTopmost();
         }

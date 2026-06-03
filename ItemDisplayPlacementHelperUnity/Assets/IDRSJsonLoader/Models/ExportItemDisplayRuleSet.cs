@@ -9,6 +9,7 @@ namespace IDRSJsonLoader.Models
     public class ExportItemDisplayRuleSet
     {
         public string bodyName;
+        public string skinName;
         public List<ExportKeyAssetRuleGroup> itemGroups = new List<ExportKeyAssetRuleGroup>();
         public List<ExportKeyAssetRuleGroup> equipmentGroups = new List<ExportKeyAssetRuleGroup>();
     }

@@ -102,7 +102,8 @@ You can make your own format by using placeholders to specify where values shoul
 * **{m:limbMask}** - Limb mask as ***LimbFlags.Flags***
 * **{m:guid}** - FollowerPrefab's guid in Addressables as ***"string"***
 * **{m:assetBundle}** - FollowerPrefab's AssetBundle name as ***"string"***
-* **{m:path}** - FollowerPrefab's path in the AssetBundle as ***"string"***
+* **{m:assetPath}** - FollowerPrefab's asset path in the AssetBundle as ***"string"***
+* **{m:skinName}** - Selected skin name as ***"string"***
 
 
 **m:** - Modificator for the output value. Available options:
