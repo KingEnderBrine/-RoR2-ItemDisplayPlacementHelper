@@ -52,7 +52,7 @@ MonoBehaviour:
   Author: KingEnderBrine
   Name: IDRSJsonLoader
   Description: Automatically loads .idrsjson files
-  Version: 1.0.1
+  Version: 1.0.2
   Dependencies:
   - {fileID: 11400000, guid: 2d4d09ec817c24698d35dc9bf0704fdc, type: 2}
   - {fileID: 11400000, guid: 26a5d0e882b2318040252a7dea457d06, type: 2}
