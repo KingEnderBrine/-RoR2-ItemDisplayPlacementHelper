@@ -53,7 +53,7 @@ MonoBehaviour:
   Author: KingEnderBrine
   Name: ItemDisplayPlacementHelper
   Description: A mod/tool for item/character devs to simplify work with IDRS placement
-  Version: 1.8.1
+  Version: 1.8.2
   Dependencies:
   - {fileID: 11400000, guid: 2d4d09ec817c24698d35dc9bf0704fdc, type: 2}
   - {fileID: 11400000, guid: a0c82417e1b89284ab1755256206e744, type: 2}

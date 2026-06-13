@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HG;
+using IDRSJsonLoader;
 using IDRSJsonLoader.Models;
 using ItemDisplayPlacementHelper.Dialogs;
 using ItemDisplayPlacementHelper.Editable;
@@ -17,6 +19,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.UI;
+using static ChildLocator;
 
 namespace ItemDisplayPlacementHelper
 {
@@ -262,6 +265,15 @@ namespace ItemDisplayPlacementHelper
                             ruleGroup.localPos = displayRule.localPos;
                             ruleGroup.localAngles = displayRule.localAngles;
                             ruleGroup.childName = displayRule.childName;
+                            if (!string.IsNullOrEmpty(displayRule.childName) && displayRule.childName.EndsWith(StringHelpers.NamePostfix))
+                            {
+                                var model = ModelPicker.Instance.CharacterModel;
+                                var child = model.childLocator.FindChild(ruleGroup.childName);
+                                if (child)
+                                {
+                                    ruleGroup.childPath = Utils.GetChildPath(model.transform, child);
+                                }
+                            }
                             ruleGroup.limbMask = displayRule.limbMask;
                             ruleGroup.ruleType = displayRule.ruleType;
 
@@ -553,9 +565,28 @@ namespace ItemDisplayPlacementHelper
                     for (int i = 0; i < ruleGroup.rules.Count; i++)
                     {
                         var displayGroup = ruleGroup.rules[i];
+                        var childName = displayGroup.childName;
+                        if (!string.IsNullOrEmpty(displayGroup.childPath))
+                        {
+                            var child = ModelPicker.Instance.CharacterModel.transform.Find(displayGroup.childPath);
+                            if (child)
+                            {
+                                childName = StringHelpers.ChildNameFromPath(displayGroup.childPath);
+                                var locator = ModelPicker.Instance.CharacterModel.childLocator;
+                                if (!locator.FindChild(childName))
+                                {
+                                    ArrayUtils.ArrayAppend(ref locator.transformPairs, new NameTransformPair
+                                    {
+                                        name = childName,
+                                        transform = child
+                                    });
+                                    ParentedPrefabDisplayController.Instance.childNameDropdown.options.Add(new TMP_Dropdown.OptionData(childName));
+                                }
+                            }
+                        }
                         var rule = new EditableItemDisplayRule
                         {
-                            childName = displayGroup.childName,
+                            childName = childName,
                             ruleType = displayGroup.ruleType,
                             limbMask = displayGroup.limbMask,
                             localAngles = displayGroup.localAngles,

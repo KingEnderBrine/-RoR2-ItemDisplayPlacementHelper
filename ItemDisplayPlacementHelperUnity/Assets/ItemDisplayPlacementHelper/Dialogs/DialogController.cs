@@ -40,7 +40,7 @@ namespace ItemDisplayPlacementHelper.Dialogs
             controller.textComponent.text = text;
         }
 
-        public static void ShowPrefabPicker(PrefabPickHandler onPick)
+        public static void ShowPrefabPicker(string guid, string assetBundle, string path, PrefabPickHandler onPick)
         {
             if (!Instance)
             {
@@ -49,6 +49,17 @@ namespace ItemDisplayPlacementHelper.Dialogs
 
             var controller = SpawnDialog<PrefabPickerDialogController>(Instance.prefabPickerPrefab);
             controller.onPick = onPick;
+            if (!string.IsNullOrEmpty(guid))
+            {
+                controller.typeDropdown.value = (int)PrefabSource.Addressables;
+                controller.guidInput.text = guid;
+            }
+            else
+            {
+                controller.typeDropdown.value = (int)PrefabSource.AssetBundle;
+                controller.assetBundleInput.text = assetBundle;
+                controller.pathInput.text = path;
+            }
         }
 
         public static void ShowKeyAssetPicker(IEnumerable<UnityEngine.Object> rows, KeyAssetPickHandler onPick)

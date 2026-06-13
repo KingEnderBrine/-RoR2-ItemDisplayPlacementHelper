@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HG;
+using IDRSJsonLoader;
 using ItemDisplayPlacementHelper.Assets.ItemDisplayPlacementHelper;
 using ItemDisplayPlacementHelper.AxisEditing;
 using ItemDisplayPlacementHelper.Dialogs;
@@ -12,6 +14,7 @@ using RoR2;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static ChildLocator;
 
 namespace ItemDisplayPlacementHelper
 {
@@ -24,6 +27,7 @@ namespace ItemDisplayPlacementHelper
         public Button selectPrefabButton;
         public TMP_Text prefabText;
         public TMP_Dropdown childNameDropdown;
+        public SearchableDropdown childPathDropdown;
 
         [Space]
         public Vector3InputField localPosInput;
@@ -105,6 +109,7 @@ namespace ItemDisplayPlacementHelper
         {
             ClearValues();
             childNameDropdown.ClearOptions();
+            childPathDropdown.ClearOptions();
         }
 
         private void OnModelChanged(CharacterModel characterModel)
@@ -114,6 +119,19 @@ namespace ItemDisplayPlacementHelper
             if (characterModel && characterModel.childLocator)
             {
                 childNameDropdown.options.AddRange(characterModel.childLocator.transformPairs.Select(el => new TMP_Dropdown.OptionData(el.name)).ToList());
+                BuildChildPathDropdownOptions(ModelPicker.Instance.ModelInfo.modelPrefab.transform);
+            }
+        }
+
+        private void BuildChildPathDropdownOptions(Transform parent, string parentPath = null)
+        {
+            var n = parent.childCount;
+            for (var i = 0; i < n; i++)
+            {
+                var child = parent.GetChild(i);
+                var childPath = parentPath is null ? child.name : $"{parentPath}/{child.name}";
+                childPathDropdown.Options.Add(new SearchableDropdown.OptionData(childPath, childPath));
+                BuildChildPathDropdownOptions(child, childPath);
             }
         }
 
@@ -135,6 +153,7 @@ namespace ItemDisplayPlacementHelper
 
             selectPrefabButton.interactable = isParentedPrefab;
             childNameDropdown.interactable = isParentedPrefab;
+            childPathDropdown.interactable = isParentedPrefab;
 
             localPosInput.interactable = instanceExists;
             localAnglesInput.interactable = instanceExists;
@@ -254,7 +273,8 @@ namespace ItemDisplayPlacementHelper
 
         public void SelectPrefab()
         {
-            DialogController.ShowPrefabPicker((prefab, reference, assetBundle, path) =>
+            ItemDisplayRuleSetController.Instance.FillPrefabReference(ItemDisplayRule, true);
+            DialogController.ShowPrefabPicker(ItemDisplayRule.followerPrefabAddress?.AssetGUID, ItemDisplayRule.assetBundle, ItemDisplayRule.assetPath, (prefab, reference, assetBundle, path) =>
             {
                 if (ItemDisplayRule.instance)
                 {
@@ -306,11 +326,37 @@ namespace ItemDisplayPlacementHelper
             var child = pair.transform;
             ItemDisplayRule.childName = pair.name;
             ItemDisplayRule.TrySpawnInstance(characterModel);
+            if (ItemDisplayRule.followerPrefab)
+            {
+                prefabText.text = ItemDisplayRule.followerPrefab.name;
+            }
             if (ItemDisplayRule.instance)
             {
                 ItemDisplayRule.instance.transform.SetParent(child, false);
                 EditorAxisController.Instance.SetSelectedObject(ItemDisplayRule.instance.transform);
             }
+        }
+
+        public void AddNewChild(object childPathObj)
+        {
+            var childPath = childPathObj as string;
+            var model = ModelPicker.Instance.CharacterModel;
+            var childName = StringHelpers.ChildNameFromPath(childPath);
+            var locator = model.childLocator;
+            var childIndex = locator.FindChildIndex(childName);
+            if (childIndex < 0)
+            {
+                childIndex = locator.transformPairs.Length;
+                var child = model.transform.Find(childPath);
+                ArrayUtils.ArrayAppend(ref locator.transformPairs, new NameTransformPair
+                {
+                    name = childName,
+                    transform = child
+                });
+                childNameDropdown.options.Add(new TMP_Dropdown.OptionData(childName));
+            }
+
+            childNameDropdown.value = childIndex;
         }
 
         public void SelectFormat(int format)

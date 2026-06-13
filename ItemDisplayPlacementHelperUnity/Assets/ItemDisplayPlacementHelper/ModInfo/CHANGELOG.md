@@ -1,3 +1,8 @@
+**1.8.2**
+
+* Added the ability to select any child `GameObject` and add it to `ChildLocator`.
+* Clicking `Select Prefab` button now shows data for currently selected prefab instead of being empty.
+
 **1.8.1**
 
 * Added new placeholder `skinName` for custom format.

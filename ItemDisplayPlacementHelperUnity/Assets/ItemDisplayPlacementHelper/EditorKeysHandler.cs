@@ -80,7 +80,7 @@ namespace ItemDisplayPlacementHelper
             {
                 Time.timeScale = Time.timeScale == 0 ? 1 : 0;
             }
-            if (Input.GetKeyDown(KeyCode.F) && ParentedPrefabDisplayController.Instance && ParentedPrefabDisplayController.Instance.ItemDisplayRule.instance)
+            if (Input.GetKeyDown(KeyCode.F) && ParentedPrefabDisplayController.Instance && ParentedPrefabDisplayController.Instance.ItemDisplayRule?.instance)
             {
                 EditorSceneCameraController.Instance.FocusOnPoint(ParentedPrefabDisplayController.Instance.ItemDisplayRule.instance.transform.position);
             }

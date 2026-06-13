@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ItemDisplayPlacementHelper
 {
@@ -10,9 +7,6 @@ namespace ItemDisplayPlacementHelper
     {
         public static bool ContainsInSequence(this string target, string input, string delimiter = null)
         {
-            var lowerCaseTarget = target.ToLowerInvariant();
-            var lowerCaseInput = input.ToLowerInvariant();
-
             if (input.Length == 0)
             {
                 return true;
@@ -23,19 +17,31 @@ namespace ItemDisplayPlacementHelper
                 return false;
             }
 
-            if (string.IsNullOrEmpty(delimiter))
+            var comparer = StringComparer.OrdinalIgnoreCase;
+            var startIndex = 0;
+            do
             {
-                return ProcessString(lowerCaseTarget, lowerCaseInput);
-            }
-
-            var lowerCaseDelimiter = delimiter.ToLowerInvariant();
-            foreach (var targetPart in lowerCaseTarget.Split(new[] { lowerCaseDelimiter }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (ProcessString(targetPart, lowerCaseInput))
+                var delimiterIndex = string.IsNullOrEmpty(delimiter) ? -1 : target.IndexOf(delimiter, startIndex, StringComparison.OrdinalIgnoreCase);
+                if (delimiterIndex == -1)
                 {
-                    return true;
+                    delimiterIndex = target.Length;
                 }
-            }
+
+                for (int i = startIndex, j = 0; i < delimiterIndex; i++)
+                {
+                    if (char.ToUpperInvariant(target[i]) == char.ToUpperInvariant(input[j]))
+                    {
+                        j++;
+                    }
+
+                    if (j == input.Length)
+                    {
+                        return true;
+                    }
+                }
+                startIndex = delimiterIndex + (delimiter?.Length ?? 0);
+            } while (startIndex < target.Length);
+
             return false;
         }
 
@@ -69,23 +75,6 @@ namespace ItemDisplayPlacementHelper
             }
 
             return builder.ToString();
-        }
-
-        private static bool ProcessString(string target, string input)
-        {
-            var j = 0;
-            for (var i = 0; i < target.Length; i++)
-            {
-                if (target[i] == input[j])
-                {
-                    j++;
-                }
-                if (j == input.Length)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

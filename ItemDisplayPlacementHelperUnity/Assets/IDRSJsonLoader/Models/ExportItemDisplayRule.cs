@@ -15,6 +15,7 @@ namespace IDRSJsonLoader.Models
         public Vector3 localPos;
         public Vector3 localAngles;
         public string childName;
+        public string childPath;
         public LimbFlags limbMask;
         public ItemDisplayRuleType ruleType;
     }

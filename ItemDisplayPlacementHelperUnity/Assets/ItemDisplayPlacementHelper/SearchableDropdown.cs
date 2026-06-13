@@ -92,6 +92,9 @@ namespace ItemDisplayPlacementHelper
 
         protected override void Start()
         {
+#if !UNITY_EDITOR
+            textViewport.gameObject.SetActive(false);
+#endif
             base.Start();
         }
 
@@ -176,6 +179,12 @@ namespace ItemDisplayPlacementHelper
                     GetOrAddComponent<GraphicRaycaster>(gameObject);
                     GetOrAddComponent<CanvasGroup>(gameObject);
                     gameObject.SetActive(false);
+
+                    var textCanvas = GetOrAddComponent<Canvas>(textViewport.gameObject);
+                    textCanvas.overrideSorting = true;
+                    textCanvas.sortingOrder = 30000;
+                    GetOrAddComponent<GraphicRaycaster>(textViewport.gameObject);
+                    GetOrAddComponent<CanvasGroup>(textViewport.gameObject);
                     this.validTemplate = true;
                 }
             }
@@ -192,8 +201,6 @@ namespace ItemDisplayPlacementHelper
         public override void OnPointerClick(PointerEventData eventData)
         {
             this.Show();
-            textViewport.gameObject.SetActive(true);
-            m_SelectText.gameObject.SetActive(false);
             base.OnPointerClick(eventData);
         }
 
@@ -225,6 +232,15 @@ namespace ItemDisplayPlacementHelper
             }
             this.m_Template.gameObject.SetActive(true);
             this.m_Template.GetComponent<Canvas>().sortingLayerID = rootCanvas.sortingLayerID;
+            textViewport.gameObject.SetActive(true);
+            var textCanvas = this.textViewport.GetComponent<Canvas>();
+            textCanvas.overrideSorting = true;
+            textCanvas.sortingOrder = 30000;
+            textCanvas.sortingLayerID = rootCanvas.sortingLayerID;
+            if (m_SelectText)
+            {
+                m_SelectText.gameObject.SetActive(false);
+            }
             this.m_Dropdown = this.CreateDropdownList(this.m_Template.gameObject);
             this.m_Dropdown.name = "Dropdown List";
             this.m_Dropdown.SetActive(true);
@@ -262,10 +278,11 @@ namespace ItemDisplayPlacementHelper
             {
                 return;
             }
+
             RectTransform dropdownTransform = this.m_Dropdown.transform as RectTransform;
             DropdownItem dropdownItem = this.m_Dropdown.GetComponentInChildren<DropdownItem>(true);
             RectTransform contentTransform = dropdownItem.rectTransform.parent.gameObject.transform as RectTransform;
-            var activeItems = m_Items.Where(el => el.gameObject.activeSelf);
+            var activeItems = m_Items.Where(el => el.gameObject.activeSelf).ToArray();
             
             contentTransform.sizeDelta = initialContentSizeDelta;
             dropdownTransform.sizeDelta = initialDropdownSizeDelta;
@@ -276,7 +293,7 @@ namespace ItemDisplayPlacementHelper
             Vector2 vector2_2 = dropdownItemRect.max - contentRect.max + (Vector2)dropdownItem.rectTransform.localPosition;
             Vector2 size = dropdownItemRect.size;
             Vector2 sizeDelta = contentTransform.sizeDelta;
-            sizeDelta.y = size.y * activeItems.Count() + vector2_1.y - vector2_2.y;
+            sizeDelta.y = size.y * activeItems.Length + vector2_1.y - vector2_2.y;
             contentTransform.sizeDelta = sizeDelta;
             Rect rect3 = dropdownTransform.rect;
             double height1 = rect3.height;
@@ -326,12 +343,12 @@ namespace ItemDisplayPlacementHelper
                 if (flag)
                     RectTransformUtility.FlipLayoutOnAxis(dropdownTransform, index1, false, false);
             }
-            for (int index = 0; index < activeItems.Count(); ++index)
+            for (int index = 0; index < activeItems.Length; ++index)
             {
-                RectTransform rectTransform = activeItems.ElementAt(index).rectTransform;
+                RectTransform rectTransform = activeItems[index].rectTransform;
                 rectTransform.anchorMin = new Vector2(rectTransform.anchorMin.x, 0.0f);
                 rectTransform.anchorMax = new Vector2(rectTransform.anchorMax.x, 0.0f);
-                rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, (float)(vector2_1.y + size.y * (double)(activeItems.Count() - 1 - index) + size.y * (double)rectTransform.pivot.y));
+                rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, (float)(vector2_1.y + size.y * (double)(activeItems.Length - 1 - index) + size.y * (double)rectTransform.pivot.y));
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, size.y);
             }
         }
@@ -354,7 +371,6 @@ namespace ItemDisplayPlacementHelper
             gameObject.AddComponent<Button>().onClick.AddListener(new UnityAction(this.Hide));
             return gameObject;
         }
-
 
         protected virtual GameObject CreateDropdownList(GameObject template) => Instantiate(template);
 
@@ -433,7 +449,10 @@ namespace ItemDisplayPlacementHelper
 
 
             textViewport.gameObject.SetActive(false);
-            m_SelectText.gameObject.SetActive(true);
+            if (m_SelectText)
+            {
+                m_SelectText.gameObject.SetActive(true);
+            }
             SetTextWithoutNotify(String.Empty);
         }
 

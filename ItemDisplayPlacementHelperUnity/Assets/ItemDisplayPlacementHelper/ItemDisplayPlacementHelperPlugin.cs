@@ -17,7 +17,7 @@ namespace ItemDisplayPlacementHelper
     {
         public const string Guid = "com.KingEnderBrine.ItemDisplayPlacementHelper";
         public const string Name = "Item Display Placement Helper";
-        public const string Version = "1.8.0";
+        public const string Version = "1.8.2";
 
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }
@@ -44,8 +44,8 @@ namespace ItemDisplayPlacementHelper
             }
         }
 
-        //For now I didn't found a better way to start my scene that will allow me to use pause screen.
-        //Pause screen require NetworkManager.singleton.isNetworkActive == true
+        //For now I haven't found a better way to start my scene that will allow me to use pause screen.
+        //Pause screen requires NetworkManager.singleton.isNetworkActive == true
         private IEnumerator StartSceneCoroutine()
         {
             if (NetworkManager.networkSceneName == "KingEnderBrine_IDRS_Editor")

@@ -7,12 +7,9 @@ using RoR2;
 
 namespace IDRSJsonLoader.Models
 {
-    internal class DelayedReplacementInfo
+    internal class AssetsInfo
     {
-        public ExportItemDisplayRuleSet exportIdrs;
-        public ParseCallback beforeGenerateRuntimeValues;
-        public ItemDisplayRuleSet idrs;
-        public SkinDef skinDef;
+        public Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup> groups = new Dictionary<UnityEngine.Object, ExportKeyAssetRuleGroup>();
         public CharacterModel characterModel;
     }
 }
