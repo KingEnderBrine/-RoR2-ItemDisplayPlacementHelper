@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -8,6 +9,7 @@ using ItemDisplayPlacementHelper.Assets.ItemDisplayPlacementHelper;
 using RoR2;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace ItemDisplayPlacementHelper.Dialogs
@@ -32,19 +34,37 @@ namespace ItemDisplayPlacementHelper.Dialogs
             }
             rows.Clear();
 
-            foreach (var (keyAsset, (icon, name, subName)) in keyAssets.Select(a => (a, GetItemInfo(a))).OrderBy(e => string.IsNullOrEmpty(e.Item2.name)).ThenBy(e => e.Item2.name))
+            foreach (var (keyAsset, (icon, iconRef, name, subName)) in keyAssets.Select(a => (a, GetItemInfo(a))).OrderBy(e => string.IsNullOrEmpty(e.Item2.name)).ThenBy(e => e.Item2.name))
             {
                 var rowInstance = Instantiate(rowPrefab, container);
                 var row = rowInstance.GetComponent<KeyAssetRowController>();
 
-                row.icon.sprite = icon;
                 row.text.text = name;
                 row.subText.text = subName;
                 row.keyAsset = keyAsset;
                 rowInstance.SetActive(true);
 
+                if (iconRef != null && iconRef.RuntimeKeyIsValid())
+                {
+                    row.StartCoroutine(LoadIconCoroutine(iconRef, row));
+                }
+                else
+                {
+                    row.icon.sprite = icon;
+                }
+
                 rows.Add(row);
             }
+        }
+
+        private IEnumerator LoadIconCoroutine(AssetReferenceT<Sprite> iconRef, KeyAssetRowController row)
+        {
+            var handle = iconRef.LoadAssetAsync();
+            while (!handle.IsDone)
+            {
+                yield return null;
+            }
+            row.icon.sprite = handle.Result;
         }
 
         public void ApplyFilter(string filter)
@@ -86,16 +106,16 @@ namespace ItemDisplayPlacementHelper.Dialogs
             DialogController.HideTopmost();
         }
 
-        private (Sprite icon, string name, string subName) GetItemInfo(UnityEngine.Object keyAsset)
+        private (Sprite icon, AssetReferenceT<Sprite>, string name, string subName) GetItemInfo(UnityEngine.Object keyAsset)
         {
             if (keyAsset is ItemDef item)
             {
-                return (item.pickupIconSprite, Language.GetString(item.nameToken), item.name);
+                return (item.GetIcon(), item.GetIconReference(), Language.GetString(item.nameToken), item.name);
             }
 
             if (keyAsset is EquipmentDef equipment)
             {
-                return (equipment.pickupIconSprite, Language.GetString(equipment.nameToken), equipment.name);
+                return (equipment.GetIcon(), equipment.GetIconReference(), Language.GetString(equipment.nameToken), equipment.name);
             }
 
             return default;

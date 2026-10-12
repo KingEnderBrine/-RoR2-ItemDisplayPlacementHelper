@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using ItemDisplayPlacementHelper.AxisEditing;
 using ItemDisplayPlacementHelper.Editable;
 using RoR2;
 using UnityEngine;
@@ -104,6 +105,8 @@ namespace ItemDisplayPlacementHelper
         {
             DisplayRuleGroup.Disable(characterModel);
             DisplayRuleGroup.Enable(characterModel);
+            var currentRule = ParentedPrefabDisplayController.Instance.ItemDisplayRule;
+            EditorAxisController.Instance.SetSelectedObject(currentRule?.instance ? currentRule.instance.transform : null);
         }
 
         public void Add()

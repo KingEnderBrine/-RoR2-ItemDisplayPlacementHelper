@@ -14,13 +14,13 @@ namespace ItemDisplayPlacementHelper.Native
         private static readonly MethodInfo GetCachedPtr = typeof(UnityEngine.Object).GetMethod(nameof(GetCachedPtr), (BindingFlags)(-1));
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate IntPtr PersistentManagerGetPathNameHandler(PersistentManager* persistentManager, StringStorageDefaultV2* returnString, int instanceID);
-        private const int PersistentManagerGetPathNameOffset = 0x67e6f0;
+        private const int PersistentManagerGetPathNameOffset = 0x686670;
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate void FreeAllocInternalHandler(IntPtr ptr, int label, IntPtr file, int line);
-        private const int FreeAllocInternalOffset = 0x279340;
+        private const int FreeAllocInternalOffset = 0x27a740;
 
-        private const int PersistentManagerOffset = 0x1b3c168;
+        private const int PersistentManagerOffset = 0x1b3a2f8;
         private static IntPtr PersistentManagerPtr;
         private static PersistentManager* PersistentManager => *(PersistentManager**)PersistentManagerPtr.ToPointer();
         private static PersistentManagerGetPathNameHandler PersistentManagerGetPathName;

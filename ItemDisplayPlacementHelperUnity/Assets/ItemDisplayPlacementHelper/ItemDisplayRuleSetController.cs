@@ -126,22 +126,22 @@ namespace ItemDisplayPlacementHelper
             var controller = row.GetComponent<DisplayRuleGroupPreviewController>();
     
             controller.displayRuleGroup = displayRuleGroup;
-            (controller.icon, controller.nameText) = GetItemInfo(displayRuleGroup.KeyAsset);
+            (controller.icon, controller.iconRef, controller.nameText) = GetItemInfo(displayRuleGroup.KeyAsset);
     
             row.SetActive(true);
             previewRows.Add(controller);
         }
 
-        private (Sprite, string) GetItemInfo(UnityEngine.Object keyAsset)
+        private (Sprite, AssetReferenceT<Sprite>, string) GetItemInfo(UnityEngine.Object keyAsset)
         {
             if (keyAsset is ItemDef item)
             {
-                return (item.pickupIconSprite, Language.GetString(item.nameToken));
+                return (item.GetIcon(), item.GetIconReference(), Language.GetString(item.nameToken));
             }
 
             if (keyAsset is EquipmentDef equipment)
             {
-                return (equipment.pickupIconSprite, Language.GetString(equipment.nameToken));
+                return (equipment.GetIcon(), equipment.GetIconReference(), Language.GetString(equipment.nameToken));
             }
 
             return default;

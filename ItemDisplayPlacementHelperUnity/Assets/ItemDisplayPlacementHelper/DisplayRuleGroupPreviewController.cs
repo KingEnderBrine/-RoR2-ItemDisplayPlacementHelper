@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using ItemDisplayPlacementHelper.Editable;
 using RoR2;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace ItemDisplayPlacementHelper
@@ -11,6 +13,8 @@ namespace ItemDisplayPlacementHelper
     {
         [HideInInspector, NonSerialized]
         public Sprite icon;
+        [HideInInspector, NonSerialized]
+        public AssetReferenceT<Sprite> iconRef;
         [HideInInspector, NonSerialized]
         public string nameText;
         [HideInInspector, NonSerialized]
@@ -50,7 +54,14 @@ namespace ItemDisplayPlacementHelper
         private void Start()
         {
             textComponent.text = nameText;
-            imageComponent.sprite = icon;
+            if (iconRef != null && iconRef.RuntimeKeyIsValid())
+            {
+                StartCoroutine(LoadIconCoroutine());
+            }
+            else
+            {
+                imageComponent.sprite = icon;
+            }
 
             toggleComponent.isOn = displayRuleGroup.Enabled;
         }
@@ -92,6 +103,16 @@ namespace ItemDisplayPlacementHelper
         private void Update()
         {
             background.enabled = DisplayRuleGroupEditingController.Instance.DisplayRuleGroup == displayRuleGroup;
+        }
+
+        private IEnumerator LoadIconCoroutine()
+        {
+            var handle = iconRef.LoadAssetAsync();
+            while (!handle.IsDone)
+            {
+                yield return null;
+            }
+            imageComponent.sprite = handle.Result;
         }
     }
 }
