@@ -107,6 +107,12 @@ namespace ItemDisplayPlacementHelper
 
         private IEnumerator LoadIconCoroutine()
         {
+            if (iconRef.Asset)
+            {
+                imageComponent.sprite = iconRef.Asset as Sprite;
+                yield break;
+            }
+
             var handle = iconRef.LoadAssetAsync();
             while (!handle.IsDone)
             {

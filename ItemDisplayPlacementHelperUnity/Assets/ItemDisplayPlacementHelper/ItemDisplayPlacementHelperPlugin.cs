@@ -17,7 +17,7 @@ namespace ItemDisplayPlacementHelper
     {
         public const string Guid = "com.KingEnderBrine.ItemDisplayPlacementHelper";
         public const string Name = "Item Display Placement Helper";
-        public const string Version = "1.8.3";
+        public const string Version = "1.8.4";
 
         internal static ItemDisplayPlacementHelperPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }

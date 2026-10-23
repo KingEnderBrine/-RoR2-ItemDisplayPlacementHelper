@@ -1,3 +1,6 @@
+**1.8.4**
+* Fixed an issue where icons would not load after switching bodies.
+
 **1.8.3**
 * Fixes for `Hallowed Concepts` update.
 

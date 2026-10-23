@@ -59,6 +59,12 @@ namespace ItemDisplayPlacementHelper.Dialogs
 
         private IEnumerator LoadIconCoroutine(AssetReferenceT<Sprite> iconRef, KeyAssetRowController row)
         {
+            if (iconRef.Asset)
+            {
+                row.icon.sprite = iconRef.Asset as Sprite;
+                yield break;
+            }
+
             var handle = iconRef.LoadAssetAsync();
             while (!handle.IsDone)
             {
