@@ -1,9 +1,7 @@
-﻿using RoR2;
-using System;
-using System.Globalization;
+﻿using System.Globalization;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Animations;
+using UnityEngine.UI;
 
 namespace ItemDisplayPlacementHelper
 {
@@ -12,7 +10,10 @@ namespace ItemDisplayPlacementHelper
         public TMP_InputField xInput;
         public TMP_InputField yInput;
         public TMP_InputField zInput;
+        public Button resetTransformButton;
+        public Vector3 defaultValue;
 
+        [HideInInspector]
         public bool interactable;
 
         public delegate void OnChangeEvent(Vector3 value);
@@ -40,6 +41,7 @@ namespace ItemDisplayPlacementHelper
             xInput.interactable = interactable;
             yInput.interactable = interactable;
             zInput.interactable = interactable;
+            resetTransformButton.interactable = interactable;
         }
 
         public void ClearValues()
@@ -100,6 +102,11 @@ namespace ItemDisplayPlacementHelper
                     zInput.text = "0";
                     break;
             }
+        }
+
+        public void ResetValue()
+        {
+            CurrentValue = defaultValue;
         }
 
         public void SetValueWithoutNotify(Vector3 value, bool forceUpdate = false) => SetValueWithoutNotifyInternal(value, forceUpdate);

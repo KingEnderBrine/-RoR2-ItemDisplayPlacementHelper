@@ -1,3 +1,6 @@
+**1.8.6**
+* Added buttons to reset item display rule transforms for `Local position`, `Local angles` and `Local scale` fields.
+
 **1.8.5**
 * Added `Add Missing Groups` option to import dialog.
 
