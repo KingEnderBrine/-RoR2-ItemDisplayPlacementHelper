@@ -1,3 +1,6 @@
+**1.8.5**
+* Added `Add Missing Groups` option to import dialog.
+
 **1.8.4**
 * Fixed an issue where icons would not load after switching bodies.
 

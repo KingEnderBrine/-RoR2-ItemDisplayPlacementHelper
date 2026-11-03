@@ -503,6 +503,7 @@ namespace ItemDisplayPlacementHelper
 
                     DisableAll();
 
+                    var skipExisting = false;
                     if (importType == ImportType.ReplaceSet)
                     {
                         for (var i = 0; i < previewRows.Count; i++)
@@ -513,6 +514,10 @@ namespace ItemDisplayPlacementHelper
                         }
                         itemDisplayRuleSet.DisplayRuleGroups.Clear();
                         previewRows.Clear();
+                    }
+                    else if (importType == ImportType.AddMissingGroups)
+                    {
+                        skipExisting = true;
                     }
 
                     var allBundles = AssetBundle.GetAllLoadedAssetBundles().ToDictionary(b => b.name);
@@ -530,6 +535,11 @@ namespace ItemDisplayPlacementHelper
                             continue;
                         }
 
+                        if (skipExisting && itemDisplayRuleSet.DisplayRuleGroups.Any(g => g.KeyAsset == def))
+                        {
+                            continue;
+                        }
+
                         var group = MapGroup(allBundles, childNames, ruleGroup);
                         group.KeyAsset = def;
                         AddKeyAsset(group);
@@ -542,6 +552,11 @@ namespace ItemDisplayPlacementHelper
                         if (!def)
                         {
                             ItemDisplayPlacementHelperPlugin.InstanceLogger.LogError($"Couldn't get EquipmentDef name=\"{ruleGroup.name}\"");
+                            continue;
+                        }
+
+                        if (skipExisting && itemDisplayRuleSet.DisplayRuleGroups.Any(g => g.KeyAsset == def))
+                        {
                             continue;
                         }
 

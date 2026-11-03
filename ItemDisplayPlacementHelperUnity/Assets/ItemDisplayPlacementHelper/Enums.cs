@@ -17,6 +17,6 @@
     }
     public enum CopyFormat { Custom, Block, Inline, ForParsing }
     public enum PrefabSource { Addressables, AssetBundle }
-    public enum ImportType { ReplaceSet, AddOrUpdateGroups }
+    public enum ImportType { ReplaceSet, AddOrUpdateGroups, AddMissingGroups }
     public enum AssetsToExport { All, Filtered, Enabled }
 }
