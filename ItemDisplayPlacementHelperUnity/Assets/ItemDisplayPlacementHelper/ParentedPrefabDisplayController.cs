@@ -30,6 +30,11 @@ namespace ItemDisplayPlacementHelper
         public SearchableDropdown childPathDropdown;
 
         [Space]
+        public Button copyTransformButton;
+        public Button pasteTransformButton;
+        public Button resetTransformButton;
+
+        [Space]
         public Vector3InputField localPosInput;
         public Vector3InputField localAnglesInput;
         public Vector3InputField localScaleInput;
@@ -43,6 +48,8 @@ namespace ItemDisplayPlacementHelper
         public TMP_InputField customFormatInput;
         public TMP_Text formatPreviewText;
         public TMP_Dropdown formatDropdown;
+
+        private TransformValues copiedValues;
 
         private CharacterModel characterModel;
         public EditableItemDisplayRule ItemDisplayRule { get; private set; }
@@ -154,6 +161,10 @@ namespace ItemDisplayPlacementHelper
             selectPrefabButton.interactable = isParentedPrefab;
             childNameDropdown.interactable = isParentedPrefab;
             childPathDropdown.interactable = isParentedPrefab;
+
+            copyTransformButton.interactable = instanceExists;
+            pasteTransformButton.interactable = instanceExists && copiedValues is not null;
+            resetTransformButton.interactable = instanceExists;
 
             localPosInput.interactable = instanceExists;
             localAnglesInput.interactable = instanceExists;
@@ -390,6 +401,33 @@ namespace ItemDisplayPlacementHelper
         public void ToogleEditFormatContainerVisibility()
         {
             editFormatContainer.SetActive(!editFormatContainer.activeSelf);
+        }
+
+        public void ResetTransform()
+        {
+            localPosInput.ResetValue();
+            localAnglesInput.ResetValue();
+            localScaleInput.ResetValue();
+        }
+
+        public void CopyTransform()
+        {
+            copiedValues = new TransformValues
+            {
+                position = localPosInput.CurrentValue,
+                angles = localAnglesInput.CurrentValue,
+                scale = localScaleInput.CurrentValue,
+            };
+        }
+
+        public void PasteTransform()
+        {
+            if (copiedValues is not null)
+            {
+                localPosInput.CurrentValue = copiedValues.position;
+                localAnglesInput.CurrentValue = copiedValues.angles;
+                localScaleInput.CurrentValue = copiedValues.scale;
+            }
         }
 
         private string ReplacePlaceHolders(string text)

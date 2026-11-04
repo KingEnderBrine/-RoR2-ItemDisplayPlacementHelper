@@ -1,3 +1,7 @@
+**1.8.7**
+* Added copy and paste buttons for transform values.
+* Added a button to reset all transform fields at once. 
+
 **1.8.6**
 * Added buttons to reset item display rule transforms for `Local position`, `Local angles` and `Local scale` fields.
 
