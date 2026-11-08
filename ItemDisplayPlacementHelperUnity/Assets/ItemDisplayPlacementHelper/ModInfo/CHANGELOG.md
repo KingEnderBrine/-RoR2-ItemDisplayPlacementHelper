@@ -1,3 +1,6 @@
+**1.8.8**
+* Added dropdown for choosing animator from a model.
+
 **1.8.7**
 * Added copy and paste buttons for transform values.
 * Added a button to reset all transform fields at once. 

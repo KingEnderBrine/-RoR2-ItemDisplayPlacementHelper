@@ -9,8 +9,8 @@ namespace ItemDisplayPlacementHelper
     public class ReverseSkin
     {
         private readonly List<CharacterModel.RendererInfo> baseRendererInfos = new List<CharacterModel.RendererInfo>();
-        private readonly List<SkinDef.GameObjectActivationTemplate> gameObjectActivationTemplates = new List<SkinDef.GameObjectActivationTemplate>();
         private readonly List<SkinDef.MeshReplacementTemplate> meshReplacementTemplates = new List<SkinDef.MeshReplacementTemplate>();
+        private readonly List<SkinDef.GameObjectActivationTemplate> gameObjectActivationTemplates = new List<SkinDef.GameObjectActivationTemplate>();
 
         private readonly GameObject modelObject;
 
@@ -24,6 +24,11 @@ namespace ItemDisplayPlacementHelper
             baseRendererInfos.AddRange(modelObject.GetComponent<CharacterModel>().baseRendererInfos);
             foreach (var objectActivation in runtimeSkin.gameObjectActivationTemplates)
             {
+                if (objectActivation.isCustomActivation)
+                {
+                    continue;
+                }
+
                 gameObjectActivationTemplates.Add(new SkinDef.GameObjectActivationTemplate
                 {
                     transformPath = objectActivation.transformPath,
@@ -32,9 +37,15 @@ namespace ItemDisplayPlacementHelper
             }
             foreach (var meshReplacement in runtimeSkin.meshReplacementTemplates)
             {
-                var renderer = modelObject.transform.Find(meshReplacement.transformPath).GetComponent<Renderer>();
+                var rendererTransform = modelObject.transform.Find(meshReplacement.transformPath);
+                if (!rendererTransform)
+                {
+                    continue;
+                }
 
-                Mesh mesh = null;
+                var renderer = rendererTransform.GetComponent<Renderer>();
+
+                Mesh mesh;
                 switch (renderer)
                 {
                     case MeshRenderer _:
@@ -43,6 +54,8 @@ namespace ItemDisplayPlacementHelper
                     case SkinnedMeshRenderer skinnedMeshRenderer:
                         mesh = skinnedMeshRenderer.sharedMesh;
                         break;
+                    default:
+                        continue;
                 }
 
                 meshReplacementTemplates.Add(new SkinDef.MeshReplacementTemplate
@@ -61,15 +74,28 @@ namespace ItemDisplayPlacementHelper
             }
 
             var transform = modelObject.transform;
-            modelObject.GetComponent<CharacterModel>().baseRendererInfos = baseRendererInfos.ToArray();
+            var model = modelObject.GetComponent<CharacterModel>();
+            model.baseRendererInfos = baseRendererInfos.ToArray();
 
             foreach (var objectActivation in gameObjectActivationTemplates)
             {
-                transform.Find(objectActivation.transformPath).gameObject.SetActive(objectActivation.shouldActivate);
+                var gameActivationTransform = transform.Find(objectActivation.transformPath);
+                if (gameActivationTransform)
+                {
+                    gameActivationTransform.gameObject.SetActive(objectActivation.shouldActivate);
+                }
             }
+            model.gameObjectActivationTransforms.Clear();
+            
             foreach (var meshReplacement in meshReplacementTemplates)
             {
-                Renderer component = transform.Find(meshReplacement.transformPath).GetComponent<Renderer>();
+                var rendererTransform = transform.Find(meshReplacement.transformPath);
+                if (!rendererTransform)
+                {
+                    continue;
+                }
+
+                var component = rendererTransform.GetComponent<Renderer>();
                 switch (component)
                 {
                     case MeshRenderer _:

@@ -1,6 +1,7 @@
 ﻿using Generics.Dynamics;
 using RoR2;
 using RoR2.ContentManagement;
+using RoR2.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -148,10 +149,10 @@ namespace ItemDisplayPlacementHelper
             }
             foreach (var animator in ModelInstance.GetComponentsInChildren<Animator>())
             {
-                animator.SetBool("isGrounded", true);
-                animator.SetFloat("aimPitchCycle", 0.5f);
-                animator.SetFloat("aimYawCycle", 0.5f);
-                animator.Play("Idle");
+                animator.SetBool(ModelPanel.isGroundedParamHash, true);
+                animator.SetFloat(ModelPanel.aimPitchCycleParamHash, 0.5f);
+                animator.SetFloat(ModelPanel.aimYawCycleParamHash, 0.5f);
+                animator.Play(ModelPanel.IdleStateHash);
                 animator.Update(0.0f);
             }
             foreach (var ditherModel in ModelInstance.GetComponentsInChildren<DitherModel>())
@@ -177,9 +178,13 @@ namespace ItemDisplayPlacementHelper
             {
                 akEvent.enabled = false;
             }
-            foreach (var shakeEmmiter in ModelInstance.GetComponentsInChildren<ShakeEmitter>())
+            foreach (var temporaryOverlay in ModelInstance.GetComponentsInChildren<TemporaryOverlay>())
             {
-                shakeEmmiter.enabled = false;
+                Destroy(temporaryOverlay);
+            }
+            foreach (var shakeEmitter in ModelInstance.GetComponentsInChildren<ShakeEmitter>())
+            {
+                shakeEmitter.enabled = false;
             }
 
             foreach (var collider in ModelInstance.GetComponentsInChildren<Collider>())
@@ -191,6 +196,8 @@ namespace ItemDisplayPlacementHelper
             {
                 inverseKinematic.enabled = false;
             }
+
+            ModelInstance.GetComponent<DestroyOnWakeEnd>()?.Deactivate();
 
             foreach (var meshFilter in ModelInstance.GetComponentsInChildren<MeshFilter>())
             {

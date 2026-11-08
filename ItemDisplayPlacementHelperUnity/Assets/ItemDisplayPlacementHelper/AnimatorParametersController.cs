@@ -8,7 +8,6 @@ namespace ItemDisplayPlacementHelper
 {
     public class AnimatorParametersController : MonoBehaviour
     {
-        private CharacterModel currentModel;
         private Animator currentAnimator;
 
         public Transform container;
@@ -26,61 +25,53 @@ namespace ItemDisplayPlacementHelper
 
         private void Awake()
         {
-            ModelPicker.OnModelChanged += OnModelChanged;
-            ModelPicker.OnModelWillChange += OnModelWillChange;
+            AnimatorPanelController.OnAnimatorChanged += OnAnimatorChanged;
         }
 
         private void OnDestroy()
         {
-            ModelPicker.OnModelChanged -= OnModelChanged;
-            ModelPicker.OnModelWillChange -= OnModelWillChange;
+            AnimatorPanelController.OnAnimatorChanged -= OnAnimatorChanged;
         }
 
-        private void OnModelWillChange()
+        private void OnAnimatorChanged(Animator animator)
         {
             foreach (var row in rows)
             {
                 Destroy(row.gameObject);
             }
             rows.Clear();
-            currentAnimator = null;
-        }
+            currentAnimator = animator;
 
-        private void OnModelChanged(CharacterModel model)
-        {
-            currentModel = model;
-            if (currentModel)
+            if (!animator)
             {
-                currentAnimator = currentModel.GetComponent<Animator>();
+                return;
             }
-            if (currentAnimator)
+
+            foreach (var parameter in currentAnimator.parameters)
             {
-                foreach (var parameter in currentAnimator.parameters)
+                GameObject row = null;
+                switch (parameter.type)
                 {
-                    GameObject row = null;
-                    switch (parameter.type)
-                    {
-                        case AnimatorControllerParameterType.Float:
-                            row = Instantiate(floatRowPrefab, container);
-                            break;
-                        case AnimatorControllerParameterType.Int:
-                            row = Instantiate(intRowPrefab, container);
-                            break;
-                        case AnimatorControllerParameterType.Bool:
-                            row = Instantiate(boolRowPrefab, container);
-                            break;
-                        case AnimatorControllerParameterType.Trigger:
-                            continue;
-                    }
-
-                    var parameterField = row.GetComponent<AnimatorParameterField>();
-                    parameterField.animator = currentAnimator;
-                    parameterField.parameter = parameter;
-                    
-                    rows.Add(parameterField);
-
-                    row.SetActive(true);
+                    case AnimatorControllerParameterType.Float:
+                        row = Instantiate(floatRowPrefab, container);
+                        break;
+                    case AnimatorControllerParameterType.Int:
+                        row = Instantiate(intRowPrefab, container);
+                        break;
+                    case AnimatorControllerParameterType.Bool:
+                        row = Instantiate(boolRowPrefab, container);
+                        break;
+                    case AnimatorControllerParameterType.Trigger:
+                        continue;
                 }
+
+                var parameterField = row.GetComponent<AnimatorParameterField>();
+                parameterField.animator = currentAnimator;
+                parameterField.parameter = parameter;
+                
+                rows.Add(parameterField);
+
+                row.SetActive(true);
             }
         }
 
