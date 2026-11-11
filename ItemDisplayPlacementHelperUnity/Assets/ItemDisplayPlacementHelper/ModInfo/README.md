@@ -96,7 +96,7 @@ You can make your own format by using placeholders to specify where values shoul
 * **{m:localPos.z:X}** - Local position as ***new Vector3(...)***
 * **{m:localAngles.z:X}** - Local rotation as ***new Vector3(...)***
 * **{m:localScale.z:X}** - Local scale as ***new Vector3(...)***
-* **{m:itemName}** - ItemDef/EquipmentDef name as ***"string"***
+* **{m:itemName}** - ItemDef/EquipmentDef/KeyItemDef name as ***"string"***
 * **{m:objectName}** - Current IDR GameObject name as ***"string"***
 * **{m:ruleType}** - Rule type as ***ItemDisplayRuleType.Type***
 * **{m:limbMask}** - Limb mask as ***LimbFlags.Flags***

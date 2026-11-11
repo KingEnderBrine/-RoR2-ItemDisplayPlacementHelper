@@ -1,3 +1,6 @@
+**1.8.9**
+* Added support for key items.
+
 **1.8.8**
 * Added dropdown for choosing animator from a model.
 

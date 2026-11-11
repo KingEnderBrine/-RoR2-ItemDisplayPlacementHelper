@@ -23,7 +23,7 @@ namespace IDRSJsonLoader
     {
         public const string Guid = "com.KingEnderBrine.IDRSJsonLoader";
         public const string Name = "IDRS Json Loader";
-        public const string Version = "1.0.3";
+        public const string Version = "1.0.4";
 
         internal static IDRSJsonLoaderPlugin Instance { get; private set; }
         internal static ManualLogSource InstanceLogger { get => Instance?.Logger; }
@@ -142,6 +142,15 @@ namespace IDRSJsonLoader
                     {
                         var group = exportIdrs.equipmentGroups[i];
                         var keyAsset = EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(group.name));
+                        if (keyAsset)
+                        {
+                            assetsInfo.groups[keyAsset] = group;
+                        }
+                    }
+                    for (int i = 0; i < exportIdrs.keyItemGroups.Count; i++)
+                    {
+                        var group = exportIdrs.keyItemGroups[i];
+                        var keyAsset = KeyItemCatalog.GetKeyItemDef(KeyItemCatalog.FindKeyItemIndex(group.name));
                         if (keyAsset)
                         {
                             assetsInfo.groups[keyAsset] = group;

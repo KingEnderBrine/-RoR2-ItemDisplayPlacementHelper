@@ -124,6 +124,11 @@ namespace ItemDisplayPlacementHelper.Dialogs
                 return (equipment.GetIcon(), equipment.GetIconReference(), Language.GetString(equipment.nameToken), equipment.name);
             }
 
+            if (keyAsset is KeyItemDef keyItem)
+            {
+                return (keyItem.GetIcon(), keyItem.GetIconReference(), Language.GetString(keyItem.nameToken), keyItem.name);
+            }
+
             return default;
         }
     }

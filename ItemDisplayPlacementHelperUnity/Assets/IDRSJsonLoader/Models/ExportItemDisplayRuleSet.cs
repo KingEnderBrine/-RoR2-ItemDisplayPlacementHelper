@@ -12,5 +12,6 @@ namespace IDRSJsonLoader.Models
         public string skinName;
         public List<ExportKeyAssetRuleGroup> itemGroups = new List<ExportKeyAssetRuleGroup>();
         public List<ExportKeyAssetRuleGroup> equipmentGroups = new List<ExportKeyAssetRuleGroup>();
+        public List<ExportKeyAssetRuleGroup> keyItemGroups = new List<ExportKeyAssetRuleGroup>();
     }
 }

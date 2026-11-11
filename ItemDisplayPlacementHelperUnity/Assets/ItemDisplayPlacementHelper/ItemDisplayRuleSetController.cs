@@ -57,7 +57,7 @@ namespace ItemDisplayPlacementHelper
         private void Awake()
         {
             Instance = this;
-            showItemsMode.AddOptions(ContentManager.allLoadedContentPacks.Where(el => el.equipmentDefs.Any() || el.itemDefs.Any()).Select(el => el.identifier).ToList());
+            showItemsMode.AddOptions(ContentManager.allLoadedContentPacks.Where(el => el.equipmentDefs.Any() || el.itemDefs.Any() || el.keyItemDefs.Any()).Select(el => el.identifier).ToList());
             ModelPicker.OnModelChanged += OnModelChanged;
             ModelPicker.OnModelWillChange += OnModelWillChange;
         }
@@ -99,6 +99,10 @@ namespace ItemDisplayPlacementHelper
             foreach (var equipmentDef in EquipmentCatalog.equipmentDefs)
             {
                 notPickedAssets.Add(equipmentDef);
+            }
+            foreach (var keyItemDef in KeyItemCatalog.keyItemDefs)
+            {
+                notPickedAssets.Add(keyItemDef);
             }
 
             foreach (var displayRuleGroup in itemDisplayRuleSet.DisplayRuleGroups)
@@ -142,6 +146,11 @@ namespace ItemDisplayPlacementHelper
             if (keyAsset is EquipmentDef equipment)
             {
                 return (equipment.GetIcon(), equipment.GetIconReference(), Language.GetString(equipment.nameToken));
+            }
+
+            if (keyAsset is KeyItemDef keyItem)
+            {
+                return (keyItem.GetIcon(), keyItem.GetIconReference(), Language.GetString(keyItem.nameToken));
             }
 
             return default;
@@ -293,10 +302,15 @@ namespace ItemDisplayPlacementHelper
                         {
                             idrs.equipmentGroups.Add(keyGroup);
                         }
+                        else if (displayRuleGroup.KeyAsset is KeyItemDef)
+                        {
+                            idrs.keyItemGroups.Add(keyGroup);
+                        }
                     }
 
                     idrs.itemGroups.Sort((a, b) => StringComparer.Ordinal.Compare(a.name, b.name));
                     idrs.equipmentGroups.Sort((a, b) => StringComparer.Ordinal.Compare(a.name, b.name));
+                    idrs.keyItemGroups.Sort((a, b) => StringComparer.Ordinal.Compare(a.name, b.name));
 
                     var json = JsonUtility.ToJson(idrs, true);
                     File.WriteAllText(path, json);
@@ -363,6 +377,10 @@ namespace ItemDisplayPlacementHelper
             foreach (var group in idrs.equipmentGroups)
             {
                 GenerateRuleText(sb, group, "Equipment");
+            }
+            foreach (var group in idrs.keyItemGroups)
+            {
+                GenerateRuleText(sb, group, "KeyItem");
             }
 
             void GenerateRuleText(StringBuilder sb, ExportKeyAssetRuleGroup group, string type)
@@ -482,6 +500,7 @@ namespace ItemDisplayPlacementHelper
                 .L(0)
                 .L(i).A("private static ItemDef GetItemDef(string itemDefName) => ItemCatalog.GetItemDef(ItemCatalog.FindItemIndex(itemDefName));")
                 .L(i).A("private static EquipmentDef GetEquipmentDef(string equipmentDefName) => EquipmentCatalog.GetEquipmentDef(EquipmentCatalog.FindEquipmentIndex(equipmentDefName));")
+                .L(i).A("private static KeyItemDef GetItemDef(string keyItemDefName) => KeyItemCatalog.GetKeyItemDef(KeyItemCatalog.FindKeyItemIndex(keyItemDefName));")
                 .EndBlock(ref i);
 
             if (!string.IsNullOrEmpty(@namespace))
@@ -563,6 +582,26 @@ namespace ItemDisplayPlacementHelper
                         var group = MapGroup(allBundles, childNames, ruleGroup);
                         group.KeyAsset = def;
                         group.KeyAssetAddress = new IDRSKeyAssetReference("");
+                        AddKeyAsset(group);
+                    }
+                    foreach (var ruleGroup in idrs.keyItemGroups)
+                    {
+                        var index = KeyItemCatalog.FindKeyItemIndex(ruleGroup.name);
+                        var def = KeyItemCatalog.GetKeyItemDef(index);
+
+                        if (!def)
+                        {
+                            ItemDisplayPlacementHelperPlugin.InstanceLogger.LogError($"Couldn't get KeyItemDef name=\"{ruleGroup.name}\"");
+                            continue;
+                        }
+
+                        if (skipExisting && itemDisplayRuleSet.DisplayRuleGroups.Any(g => g.KeyAsset == def))
+                        {
+                            continue;
+                        }
+
+                        var group = MapGroup(allBundles, childNames, ruleGroup);
+                        group.KeyAsset = def;
                         AddKeyAsset(group);
                     }
 
@@ -749,6 +788,10 @@ namespace ItemDisplayPlacementHelper
                     else if (row.displayRuleGroup.KeyAsset is EquipmentDef equipmentDef)
                     {
                         active = packs.Any(p => p.equipmentDefs.Contains(equipmentDef));
+                    }
+                    else if (row.displayRuleGroup.KeyAsset is KeyItemDef keyItemDef)
+                    {
+                        active = packs.Any(p => p.keyItemDefs.Contains(keyItemDef));
                     }
                 }
                 row.gameObject.SetActive(active);

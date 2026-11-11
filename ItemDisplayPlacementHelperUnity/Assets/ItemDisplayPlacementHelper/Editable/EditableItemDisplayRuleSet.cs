@@ -18,7 +18,7 @@ namespace ItemDisplayPlacementHelper.Editable
             {
                 foreach (var ruleGroup in ruleSet.keyAssetRuleGroups)
                 {
-                    if (ruleGroup.keyAsset is not ItemDef && ruleGroup.keyAsset is not EquipmentDef)
+                    if (ruleGroup.keyAsset is not ItemDef && ruleGroup.keyAsset is not EquipmentDef && ruleGroup.keyAsset is not KeyItemDef)
                     {
                         ItemDisplayPlacementHelperPlugin.InstanceLogger.LogWarning("Rule group keyAsset is invalid, skipping");
                         continue;
